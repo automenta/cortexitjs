@@ -1,0 +1,51 @@
+Cortexit TODO
+
+-Usage Limits
+    Max Downloaded File Size
+    Max # of Frames
+    Max Connections per Visitor per Amount of Time
+
+-Fix Popup "OK" Button to replace the 'X' in upper right
+
+-Improve data encoding
+
+-Fix cortexifyURL().. 
+    Example: wikipedia links are not absolute-ized
+
+-Speak
+    --Make speech draggable/resizable?
+
+-Auto play w/ Popup Speed Control
+
+
+-Display Multiple Sentences 
+	options: # lookbehind/lookahead
+
+-Top Buttons should slide top, mostly hiding, when not mouse-over
+
+-Images
+    --Make image windows http://jqueryui.com/demos/draggable/ + resizable ?
+    --Scroll to new Image Searches
+    --Open Images in New Window
+
+-Return Button ('X' in top-right)
+    --Specified by server: setReturnPage(url)
+
+-Realtime & Long-term Reading Analytics
+    Words Per Minute, Frames Per Minute
+    Reading Rate By Time-of-day
+    Reading Rate By Site
+    Sentiment Analysis
+
+-Go
+    --Include a topic tree to select feeds from
+        --RSS reading
+
+-Translate
+
+-Ads
+
+-More Themes
+
+-Sitemaps -> Menu
+

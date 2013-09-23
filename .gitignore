@@ -1,0 +1,6 @@
+/build/
+/nbproject/private/
+cortexit.ini
+/lib/CopyLibs/
+/dist/
+/node_modules/
