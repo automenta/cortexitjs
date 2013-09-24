@@ -30,6 +30,7 @@ function getSentencized(urlOrText, f) {
            str=str.replace(/<br.*>/gi, "\n");
            str=str.replace(/<p.*>/gi, "\n");
            //str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 [$1] ");
+           str=str.replace(/<img.*src="(.*?)".*>(.*?)<\/img>/gi, " {{img src='$1'}}$2{{/img}}");
            str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " {{a href='$1'}}$2{{/a}}");
            str=str.replace(/<(.*?)>/g, "");
 
@@ -109,17 +110,18 @@ var httpServer = http.createServer(express);
 httpServer.listen(webPort);
 
 express.use(expressm.bodyParser());
-express.use("/static", expressm.static('./web'));
 
-express.get('/', function(req, res) {
-	res.sendfile('index.html');
-});
+express.use("/static", expressm.static('./web'));
 
 express.post('/sentences', function(req, res) {
 	var url = req.body.url;
 	var sentences = getSentencized(url, function(sentences) {
 		sendJSON(res, sentences, false );
 	});
+});
+
+express.get('/*', function(req, res) {
+	res.sendfile('index.html');
 });
 
 console.log('Cortexit web server on port ' + webPort);

@@ -313,7 +313,13 @@
 			loadHTML(h);
 		});
 
-		loadHTML('/static/about.html');
+		var path = window.location.pathname.substring(1);
+		if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
+			loadURL(path);
+		}
+		else {
+			loadHTML('/static/about.html');
+		}
     }
 
     function enlargeImage(element, imagesrc) {

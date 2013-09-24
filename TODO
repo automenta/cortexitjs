@@ -1,5 +1,9 @@
 Cortexit TODO
 
+-Fix 'Images'
+-Fix 'Share'
+-Add URL handler for /*
+
 -Usage Limits
     Max Downloaded File Size
     Max # of Frames
@@ -27,6 +31,7 @@ Cortexit TODO
     --Make image windows http://jqueryui.com/demos/draggable/ + resizable ?
     --Scroll to new Image Searches
     --Open Images in New Window
+	--Bing, Google, etc..
 
 -Return Button ('X' in top-right)
     --Specified by server: setReturnPage(url)
