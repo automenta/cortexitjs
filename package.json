@@ -8,7 +8,8 @@
 		"util":"",
 		"node-static":"",
 		"always":"",
-		"underscore":""
+		"underscore":"",
+		"cheerio":""
 	},
     "engines": {
 		"node": "0.8.x", 

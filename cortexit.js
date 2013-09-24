@@ -1,11 +1,10 @@
 console.log('start');
 
-var apricot = require('apricot').Apricot;
 var request = require('request');
 var expressm = require('express');
 var express = expressm();
 var http = require('http');
-
+var cheerio = require('cheerio');
 
 var defaultTimeOutMS = 10000;
 
@@ -15,11 +14,12 @@ function getSentencized(urlOrText, f) {
    
    var p = function(err, doc) {
        if (err==null) {
-           doc.find("script").remove();
-           doc.find("style").remove();
-           doc.find("head").remove();
+           var $ = cheerio.load(doc);
+		   $('script').remove();
+		   $('head').remove();
+		   $('style').remove();
            
-           var str = doc.toHTML;
+           var str = $.html();
            str=str.replace(/\n/g, " ");
            //str=str.replace(/\r/g, " ");
            //str=str.replace(/\t/g, " ");
@@ -30,7 +30,7 @@ function getSentencized(urlOrText, f) {
            str=str.replace(/<br.*>/gi, "\n");
            str=str.replace(/<p.*>/gi, "\n");
            //str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 [$1] ");
-           str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " {{a href='$1'}}$2{{/a}} ");
+           str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " {{a href='$1'}}$2{{/a}}");
            str=str.replace(/<(.*?)>/g, "");
 
            var linesPreFilter = str.split("\n");
@@ -57,6 +57,9 @@ function getSentencized(urlOrText, f) {
        }
    }
    
+
+
+
    if (urlOrText.indexOf('http://')==0) {
         rootNode = urlOrText;
         rootNode = rootNode.replace(/http:\/\//g, "");
@@ -69,7 +72,8 @@ function getSentencized(urlOrText, f) {
           }, 
           function (error, response, body) {
             if (!error && response.statusCode == 200) {
-          		apricot.parse(body, p, false);            	
+          		//apricot.parse(body, p, false);            	
+				p(null, body);
             }
             else {
                 console.log('getSentencized ERROR');
@@ -83,7 +87,8 @@ function getSentencized(urlOrText, f) {
            summaryLenth = urlOrText.length;
        rootNode = urlOrText.substring(0, summaryLength);
        rootNode = encodeURIComponent(rootNode);
-       apricot.parse(urlOrText, p, false);       
+       //apricot.parse(urlOrText, p, false);       
+  	   p(null, urlOrText);
    }
 }
 

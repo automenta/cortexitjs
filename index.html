@@ -261,7 +261,19 @@
         e.returnValue = false;  // cancel default action
     }
 
+	function loadHTML(url) {
+		$.get(url, function(hh) {
+			cframes =  [hh];
+			showFrame(0);
+		});
+	}
+
 	function loadURL(u) {
+        $('#_Content').html('<div id="Loading"><center>Loading...</center></div>');
+
+		if (u.indexOf('http://')!=0)
+			u = 'http://' + u;
+
 		$.post('/sentences', { url: u }).done(function(s) {
 			cframes = s;
 			currentFrame = -1;
@@ -296,7 +308,12 @@
         content.style.fontSize = fontSize + "px";
         textzoom.style.fontSize = content.style.fontSize;
 
-		loadURL('http://en.wikipedia.org');
+		$('.goto').click(function() {
+			var h = $(this).attr('html');
+			loadHTML(h);
+		});
+
+		loadHTML('/static/about.html');
     }
 
     function enlargeImage(element, imagesrc) {
@@ -488,7 +505,7 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
     <div id="_Top" class="menu">
             
         <ul>
-            <li><a href="/go" class="tooltip"><img width="48px" height="48px" src="/static/icons/link.png" alt="Go..."/><span>Go...</span></a></li>
+            <li><a class="tooltip goto" html="/static/about.html"><img width="48px" height="48px" src="/static/icons/link.png" alt="Go..."/><span>Go...</span></a></li>
             <!--
             <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="/static/icons/play.png" alt="Play"/><span>Auto-play</span></a></li>
             -->
@@ -530,12 +547,12 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
             <li><a href="javascript:shareIt();" class="tooltip"><img width="48px" height="48px" src="/static/icons/share.png" alt="Share"/><span>Share</span></a>
             <li><a href="#" class="tooltip"><img width="48px" height="48px" src="/static/icons/question.png" alt="Help"/><span>Help</span></a>
                 <ul>
-                    <li><a href="/">What is Cortexit?</a></li>
-                    <li><a href="/static/help.svg" target="_blank">How to Use Cortexit</a></li>
-                    <li><a href="/bookmarklet">Cortexit Bookmarklet</a></li>
-                    <li><a href="/privacy">Privacy Policy</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                    <li><a href="/http://en.wikipedia.org/wiki/HTML5">HTML5</a></li>
+                    <li><a class="goto" html="/static/about.html">What is Cortexit?</a></li>
+                    <li><a class="goto" html="/static/help.html">How to Use Cortexit</a></li>
+                    <li><a class="goto" html="/static/bookmarklet.html">Cortexit Bookmarklet</a></li>
+                    <li><a class="goto" html="/static/privacy.html">Privacy Policy</a></li>
+                    <li><a class="goto" html="/static/contact.html">Contact Us</a></li>
+                    <li><a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a></li>
                 </ul>
             </li>
         </ul>
