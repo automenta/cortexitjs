@@ -7,12 +7,12 @@ function sentencize(str) {
    str=str.replace(/\. /g, ".\n");
    str=str.replace(/\? /g, "?\n");
    str=str.replace(/\! /g, "!\n");
-   str=str.replace(/<br.*>/gi, "\n");
-   str=str.replace(/<p.*>/gi, "\n");
-   str=str.replace(/<li.*>/gi, "\n");
-   str=str.replace(/<h1.*>/gi, "\n");
-   str=str.replace(/<h2.*>/gi, "\n");
-   str=str.replace(/<h3.*>/gi, "\n");
+   str=str.replace(/<br.*?>/gi, "\n");
+   str=str.replace(/<p.*?>/gi, "\n");
+   str=str.replace(/<li.*?>/gi, "\n");
+   str=str.replace(/<h1.*?>/gi, "\n");
+   str=str.replace(/<h2.*?>/gi, "\n");
+   str=str.replace(/<h3.*?>/gi, "\n");
    //str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 [$1] ");
 
 	//TODO what about: <a href='...'></a>

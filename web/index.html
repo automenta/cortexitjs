@@ -1,7 +1,6 @@
 <title>Cortexit</title>
 <link rel="stylesheet" type="text/css" href="cortexit.css" />
 <link rel="shortcut icon" href="favicon.ico" />
-<script type='text/javascript' src='animator.js'></script>
 
 <!-- <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" type="text/css" media="all" /> -->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
@@ -21,6 +20,7 @@
 	var currentPage = '';
 
 	var sentencizer = new Worker('sentencize.js');
+    var stopAutospeech = false;
 
     function enableVozmeSpeech(line) {
         speechEnabled = true;
@@ -65,7 +65,6 @@
         });
     }
     
-      var stopAutospeech = false;
     function startSpeakAutoSpeech() {
         stopAutospeech = false;
         $('#speaker_icon').attr('src', 'icons/sound_playing.png');
@@ -94,8 +93,9 @@
         
         disableVozmeSpeech();
 
+		$('#_Content').hide();
+
         var content = document.getElementById("_Content");
-        content.style.opacity = 0;
         
 
         var line = cframes[f];
@@ -129,6 +129,9 @@
 			var target = a.attr('href');
 			if (!target) return;
 
+			if (a.text() == '')
+				a.text(target);
+
 			if (target.indexOf('http://') == 0) {
 				//absolute
 				a.attr('href', '/#' + target);
@@ -148,21 +151,7 @@
 			}
 		});
         
-        var ex8 = new Animator(
-            {
-                duration: 400,
-                interval: 40,
-                onComplete: function() {
-                }
-            }
-        ).addSubject(
-            new NumericalStyleSubject(
-                content.id,
-                "opacity",
-                0.1,
-                1.0)
-        );
-        ex8.toggle();
+		$('#_Content').fadeIn("slow");
 
     }
 
