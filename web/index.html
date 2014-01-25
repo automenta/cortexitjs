@@ -17,34 +17,9 @@
     var cframes = [];
     var currentFrame;
     var speechEnabled = false;
+	var currentPage = '';
 
-	function sentencize(str) {
-	   //str=str.replace(/\n/g, " ");
-	   //str=str.replace(/\r/g, " ");
-	   //str=str.replace(/\t/g, " ");
-	   str=str.replace(/&nbsp;/g, " ");
-	   str=str.replace(/\n/g, " ");
-	   str=str.replace(/\. /g, ".\n");
-	   str=str.replace(/\? /g, "?\n");
-	   str=str.replace(/\! /g, "!\n");
-	   str=str.replace(/<br.*>/gi, "\n");
-	   str=str.replace(/<p.*>/gi, "\n");
-	   //str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 [$1] ");
-	   str=str.replace(/<img.*src="(.*?)".*>(.*?)<\/img>/gi, " {{img src='$1'}}$2{{/img}}");
-	   str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " {{a href='$1'}}$2{{/a}}");
-	   str=str.replace(/<(.*?)>/g, "");
-
-	   var linesPreFilter = str.split("\n");
-	   var slines = [];
-	   var i;
-	   for (i = 0; i < linesPreFilter.length; i++) {
-		   var t = linesPreFilter[i].trim();               
-		   if (t.length > 0) {
-		       slines.push(t);
-		   }                  
-	   }
-	   return slines;      
-	}
+	var sentencizer = new Worker('sentencize.js');
 
     function enableVozmeSpeech(line) {
         speechEnabled = true;
@@ -147,6 +122,30 @@
             next.innerHTML = '<a href="javascript:goNext()"><img src="icons/right.png" height="32px" width="32px"/></a>';
         }
         updateFonts();
+
+		$('#_Content').find('a').each(function() {
+			var a = $(this);
+			var target = a.attr('href');
+			if (!target) return;
+
+			if (target.indexOf('http://') == 0) {
+				//absolute
+				a.attr('href', '/#' + target);
+			}
+			else if (target.indexOf('/') == 0) {
+				//absolute on the server
+				var server = currentPage;
+				if (server.indexOf('http://') == 0) //remove http://
+					server = server.substring(7);
+				if (server.indexOf('/')!=-1)
+					server = server.substring(0, server.indexOf('/'));
+				a.attr('href', '/#' + server + target);
+			}
+			else {
+				//relative
+				a.attr('href', '/#' + currentPage + target);
+			}
+		});
         
         var ex8 = new Animator(
             {
@@ -297,6 +296,7 @@
 	}
 
 	function loadURL(u) {
+		currentPage = u;
 		window.location.hash = u;
 
         $('#_Content').html('<div id="Loading"><center>Loading...</center></div>');
@@ -305,11 +305,13 @@
 			u = 'http://' + u;
 
 		$.post('proxy.php', { url: u }).done(function(s) {
-			setTimeout(function() {
-				cframes = sentencize(s);
+			sentencizer.addEventListener('message', function(e) {
+				cframes = e.data;
 				currentFrame = -1;
 				goNext();
-			}, 0)
+			}, false);
+
+			sentencizer.postMessage(s);
 		});
 	}
 
@@ -345,19 +347,25 @@
 			loadHTML(h);
 		});
 
-		var path1 = window.location.hash;
-		var path = window.location.pathname.substring(1);
+		function reload() {
+			var path1 = window.location.hash;
+			var path = window.location.pathname.substring(1);
 
-		if (path1.length > 0) {
-			path1 = path1.substring(1);
-			loadURL(path1);
+			if (path1.length > 0) {
+				path1 = path1.substring(1);
+				loadURL(path1);
+			}
+			else if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
+				loadURL(path);
+			}
+			else {
+				loadHTML('about.html');
+			}
 		}
-		else if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
-			loadURL(path);
-		}
-		else {
-			loadHTML('about.html');
-		}
+
+		window.onhashchange = function() {	reload();	};
+		reload();
+
     }
 
     function enlargeImage(element, imagesrc) {

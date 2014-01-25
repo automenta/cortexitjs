@@ -1,3 +1,5 @@
+var webPort = 8787;
+
 console.log('start');
 
 var request = require('request');
@@ -5,10 +7,6 @@ var expressm = require('express');
 var express = expressm();
 var http = require('http');
 var cheerio = require('cheerio');
-
-var defaultTimeOutMS = 10000;
-
-
 
 function loadURL(URL, f) {
    
@@ -20,7 +18,7 @@ function loadURL(URL, f) {
 		   $('script').remove();
 		   $('head').remove();
 		   $('style').remove();
-                      
+           
            f($.html());
        }
        else {
@@ -30,7 +28,6 @@ function loadURL(URL, f) {
        }
    }
    
-
    if (!URL.indexOf('http://')==0) 
 		URL = 'http://' + URL;
 
@@ -38,6 +35,7 @@ function loadURL(URL, f) {
     rootNode = rootNode.replace(/http:\/\//g, "");
     rootNode = rootNode.replace(/\//g, "_");
 
+	//var defaultTimeOutMS = 10000;
     request({
         url: URL,
         followAllRedirects: true
@@ -45,23 +43,12 @@ function loadURL(URL, f) {
       }, 
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
-      		//apricot.parse(body, p, false);            	
 			p(null, body);
         }
         else {
-            console.log('getSentencized ERROR');
-            console.log(URL + ': '  + error);
+            console.error('getSentencized', URL, error);
         }
     });        
-   /*else {
-       var summaryLength = 16;
-       if (URL.length < summaryLength)
-           summaryLenth = URL.length;
-       rootNode = URL.substring(0, summaryLength);
-       rootNode = encodeURIComponent(rootNode);
-       //apricot.parse(URL, p, false);       
-  	   p(null, URL);
-   }*/
 }
 
 function sendJSON(res, x, pretty) {
@@ -74,7 +61,6 @@ function sendJSON(res, x, pretty) {
     res.end(p);
 }
 
-var webPort = 8787;
 
 var httpServer = http.createServer(express);
 
@@ -95,6 +81,5 @@ express.post('/proxy.php', function(req, res) {
 		sendJSON(res, sentences, false );
 	});
 });
-
 
 console.log('Cortexit web server on port ' + webPort);
