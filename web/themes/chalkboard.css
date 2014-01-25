@@ -16,7 +16,7 @@
 #_Panel {
     color: #eee;
     font-family: 'Love Ya Like A Sister', cursive;
-    background: url('/static/themes/image/chalkboard.png') no-repeat;
+    background: url('themes/image/chalkboard.png') no-repeat;
     background-size: cover;
     background-color: transparent;
 }

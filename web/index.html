@@ -1,6 +1,6 @@
-<link rel="stylesheet" type="text/css" href="/static/cortexit.css" />
-<link rel="shortcut icon" href="/static/favicon.ico" />
-<script type='text/javascript' src='/static/animator.js'></script>
+<link rel="stylesheet" type="text/css" href="cortexit.css" />
+<link rel="shortcut icon" href="favicon.ico" />
+<script type='text/javascript' src='animator.js'></script>
 
 <!-- <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" type="text/css" media="all" /> -->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
@@ -17,6 +17,34 @@
     var cframes = [];
     var currentFrame;
     var speechEnabled = false;
+
+	function sentencize(str) {
+	   //str=str.replace(/\n/g, " ");
+	   //str=str.replace(/\r/g, " ");
+	   //str=str.replace(/\t/g, " ");
+	   str=str.replace(/&nbsp;/g, " ");
+	   str=str.replace(/\n/g, " ");
+	   str=str.replace(/\. /g, ".\n");
+	   str=str.replace(/\? /g, "?\n");
+	   str=str.replace(/\! /g, "!\n");
+	   str=str.replace(/<br.*>/gi, "\n");
+	   str=str.replace(/<p.*>/gi, "\n");
+	   //str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 [$1] ");
+	   str=str.replace(/<img.*src="(.*?)".*>(.*?)<\/img>/gi, " {{img src='$1'}}$2{{/img}}");
+	   str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " {{a href='$1'}}$2{{/a}}");
+	   str=str.replace(/<(.*?)>/g, "");
+
+	   var linesPreFilter = str.split("\n");
+	   var slines = [];
+	   var i;
+	   for (i = 0; i < linesPreFilter.length; i++) {
+		   var t = linesPreFilter[i].trim();               
+		   if (t.length > 0) {
+		       slines.push(t);
+		   }                  
+	   }
+	   return slines;      
+	}
 
     function enableVozmeSpeech(line) {
         speechEnabled = true;
@@ -55,7 +83,7 @@
     }
     
     function speakSpeech(f) {
-        $.getScript("/static/speak/speakClient.js", function(data, textStatus, jqxhr) {
+        $.getScript("speak/speakClient.js", function(data, textStatus, jqxhr) {
             var content = $('#_Content').text();            
             speak.play(content, {amplitude: 100, wordgap: 5, pitch: 25, speed: 175}, f );
         });
@@ -64,7 +92,7 @@
       var stopAutospeech = false;
     function startSpeakAutoSpeech() {
         stopAutospeech = false;
-        $('#speaker_icon').attr('src', '/static/icons/sound_playing.png');
+        $('#speaker_icon').attr('src', 'icons/sound_playing.png');
         
         if (currentFrame<cframes.length-1)
             speakSpeech( function() { if (!stopAutospeech) goNext( function() { if (!stopAutospeech) startSpeakAutoSpeech(); });  } );
@@ -73,7 +101,7 @@
     }
     function stopSpeakAutoSpeech() {
         stopAutospeech = true;
-        $('#speaker_icon').attr('src', '/static/icons/speak.png');
+        $('#speaker_icon').attr('src', 'icons/speak.png');
         $('#audio').html('');
     }
     
@@ -107,7 +135,7 @@
             prev.innerHTML = '&nbsp;';
         }
         else {
-            prev.innerHTML = '<a href="javascript:goPrevious()"><img src="/static/icons/left.png" height="32px" width="32px"/></a>';
+            prev.innerHTML = '<a href="javascript:goPrevious()"><img src="icons/left.png" height="32px" width="32px"/></a>';
         }
 
         var next = document.getElementById("_Next");
@@ -116,7 +144,7 @@
         }
         else {
             //next.innerHTML = '<button onClick="goNext();">----&gt;</button>';
-            next.innerHTML = '<a href="javascript:goNext()"><img src="/static/icons/right.png" height="32px" width="32px"/></a>';
+            next.innerHTML = '<a href="javascript:goNext()"><img src="icons/right.png" height="32px" width="32px"/></a>';
         }
         updateFonts();
         
@@ -139,7 +167,7 @@
     }
 
     function goPrevious() {
-        if (cframes.length < 2) {
+        if (cframes.length < 1) {
             return;
         }
 
@@ -150,7 +178,7 @@
     }
 
     function goNext(f) {
-        if (cframes.length < 2)
+        if (cframes.length < 1)
             return;
 
         currentFrame++;
@@ -269,15 +297,19 @@
 	}
 
 	function loadURL(u) {
+		window.location.hash = u;
+
         $('#_Content').html('<div id="Loading"><center>Loading...</center></div>');
 
 		if (u.indexOf('http://')!=0)
 			u = 'http://' + u;
 
-		$.post('/sentences', { url: u }).done(function(s) {
-			cframes = s;
-			currentFrame = -1;
-			goNext();
+		$.post('proxy.php', { url: u }).done(function(s) {
+			setTimeout(function() {
+				cframes = sentencize(s);
+				currentFrame = -1;
+				goNext();
+			}, 0)
 		});
 	}
 
@@ -313,12 +345,18 @@
 			loadHTML(h);
 		});
 
+		var path1 = window.location.hash;
 		var path = window.location.pathname.substring(1);
-		if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
+
+		if (path1.length > 0) {
+			path1 = path1.substring(1);
+			loadURL(path1);
+		}
+		else if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
 			loadURL(path);
 		}
 		else {
-			loadHTML('/static/about.html');
+			loadHTML('about.html');
 		}
     }
 
@@ -361,7 +399,7 @@
         currentTheme = theme;
 
         var c = document.getElementById("themeCSS");
-        c.href = '/static/themes/' + theme + '.css';
+        c.href = 'themes/' + theme + '.css';
         localStorage['theme'] = theme;
     }
     
@@ -421,7 +459,7 @@
 //        });        
 //    }
 //    <div id="dialog-message" title="About Cortexit" style="display:none">
-//        <center><iframe src="/static/about.html" width="100%" height="400px"></iframe></center>
+//        <center><iframe src="about.html" width="100%" height="400px"></iframe></center>
 //    </div>
 
 
@@ -511,12 +549,12 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
     <div id="_Top" class="menu">
             
         <ul>
-            <li><a class="tooltip goto" html="/static/about.html"><img width="48px" height="48px" src="/static/icons/link.png" alt="Go..."/><span>Go...</span></a></li>
+            <li><a class="tooltip goto" html="about.html"><img width="48px" height="48px" src="icons/link.png" alt="Go..."/><span>Go...</span></a></li>
             <!--
-            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="/static/icons/play.png" alt="Play"/><span>Auto-play</span></a></li>
+            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/play.png" alt="Play"/><span>Auto-play</span></a></li>
             -->
             <!--
-            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="/static/icons/mode.png" alt="Mode"/><span>Mode</span></a>
+            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/mode.png" alt="Mode"/><span>Mode</span></a>
                 <ul>
                     <li><a href="javascript:setMode()">One Sentence</a></li>
                     <li><a href="javascript:setMode()">Two Sentences</a></li>
@@ -526,7 +564,7 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
                 </ul>
             </li>
             -->
-            <li><a href="#" class="tooltip"><img id="speaker_icon" width="48px" height="48px" src="/static/icons/speak.png" alt="Speak"/><span>Speech</span></a>
+            <li><a href="#" class="tooltip"><img id="speaker_icon" width="48px" height="48px" src="icons/speak.png" alt="Speak"/><span>Speech</span></a>
                 <ul>
                     <li><a href="javascript:speakSpeech(function() {})">Speak.js Speech (once)</a></li>
                     <li><a href="javascript:startSpeakAutoSpeech()">Start Speak.js Autoplay</a></li>
@@ -534,8 +572,8 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
                     <li><a href="javascript:toggleVozmeSpeech()">Toggle VozMe Speech</a></li>
                 </ul>
             </li> 
-            <li><a href="javascript:addImagesForSelection();" class="tooltip"><img width="48px" height="48px" src="/static/icons/picture.png" alt="Images"/><span>Images</span></a></li>
-            <li><a href="#" class="tooltip"><img width="48px" height="48px" src="/static/icons/colors.png" title="Theme"/><span>Theme</span></a>
+            <li><a href="javascript:addImagesForSelection();" class="tooltip"><img width="48px" height="48px" src="icons/picture.png" alt="Images"/><span>Images</span></a></li>
+            <li><a href="#" class="tooltip"><img width="48px" height="48px" src="icons/colors.png" title="Theme"/><span>Theme</span></a>
                 <ul>
                     <li><a href="javascript:setTheme('default-black')">White on Black</a></li>
                     <li><a href="javascript:setTheme('default-white')">Black on White</a></li>
@@ -547,17 +585,17 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
                 </ul>
             </li>
             <!--
-            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="/static/icons/earth.png" alt="Translate"/><span>Translate</span></a>
+            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/earth.png" alt="Translate"/><span>Translate</span></a>
             -->
-            <li><a href="javascript:toggleEdit();" class="tooltip"><img width="48px" height="48px" src="/static/icons/edit.png" alt="Edit"/><span>Edit</span></a>
-            <li><a href="javascript:shareIt();" class="tooltip"><img width="48px" height="48px" src="/static/icons/share.png" alt="Share"/><span>Share</span></a>
-            <li><a href="#" class="tooltip"><img width="48px" height="48px" src="/static/icons/question.png" alt="Help"/><span>Help</span></a>
+            <li><a href="javascript:toggleEdit();" class="tooltip"><img width="48px" height="48px" src="icons/edit.png" alt="Edit"/><span>Edit</span></a>
+            <li><a href="javascript:shareIt();" class="tooltip"><img width="48px" height="48px" src="icons/share.png" alt="Share"/><span>Share</span></a>
+            <li><a href="#" class="tooltip"><img width="48px" height="48px" src="icons/question.png" alt="Help"/><span>Help</span></a>
                 <ul>
-                    <li><a class="goto" html="/static/about.html">What is Cortexit?</a></li>
-                    <li><a class="goto" html="/static/help.html">How to Use Cortexit</a></li>
-                    <li><a class="goto" html="/static/bookmarklet.html">Cortexit Bookmarklet</a></li>
-                    <li><a class="goto" html="/static/privacy.html">Privacy Policy</a></li>
-                    <li><a class="goto" html="/static/contact.html">Contact Us</a></li>
+                    <li><a class="goto" html="about.html">What is Cortexit?</a></li>
+                    <li><a class="goto" html="help.html">How to Use Cortexit</a></li>
+                    <li><a class="goto" html="bookmarklet.html">Cortexit Bookmarklet</a></li>
+                    <li><a class="goto" html="privacy.html">Privacy Policy</a></li>
+                    <li><a class="goto" html="contact.html">Contact Us</a></li>
                     <li><a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a></li>
                 </ul>
             </li>
@@ -596,13 +634,13 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
                     &nbsp;
                 </td>
                 <td width="10%" align="left">
-                    <a href="javascript:fontSmaller()"><img src="/static/icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
+                    <a href="javascript:fontSmaller()"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
                 </td>
                 <td width="25%" align="center" id="_Font" >                    
                     &nbsp; Abc &nbsp;
                 </td>
                 <td width="10%" align="right">
-                    <a href="javascript:fontLarger()"><img src="/static/icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
+                    <a href="javascript:fontLarger()"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
                 </td>
             </tr>
         </table>
@@ -623,4 +661,4 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
 
 <!-- <link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" /> -->
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=[PROFILE ID]"></script>
+<!--<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=[PROFILE ID]"></script>-->

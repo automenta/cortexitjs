@@ -27,7 +27,7 @@
 }
 
 body {
-   background: url('/static/themes/image/earth.jpg') no-repeat;
+   background: url('themes/image/earth.jpg') no-repeat;
    background-size: cover;
    background-color: transparent;
 }

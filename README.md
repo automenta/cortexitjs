@@ -22,14 +22,23 @@ You are no longer at the mercy of web designers and authors that insist on writi
 
 (This is an updated version of the original Cortexit Google Chrome Browser Plugin).
 
-Setup
------
+Usage
+=====
+*   Visit http://[cortexit] to load the main page.
+*   Visit http://[cortexit]#[URL] to load a specific URL
+
+
+Node.JS Setup
+-------------
 
 _Packaged installers will be available soon._  In the meantime, you will need _Node.JS_ to run it.
 
-Install: npm install
-
-Run: node cortexit.js
+*   Install: npm install
+*   Run: node cortexit.js
 
 This starts a webserver on port 8787 which you can visit at: http://localhost:8787
 
+
+PHP Setup
+---------
+Copy the web/ folder to a PHP-hosted web server. ( index.html accesses proxy.php )

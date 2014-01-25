@@ -1,0 +1,9 @@
+#Options +FollowSymLinks
+#RewriteEngine On
+
+# DOESNT WORK YET
+#RewriteRule ^web/(.*)$ index.html?url=$1 [R]
+
+#RewriteRule ^([a-z]{2,2})/([a-zA-Z0-9_-]+)$ index.php?url=$1 [QSA]
+
+

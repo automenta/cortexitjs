@@ -14,7 +14,7 @@
 }
 
 body {
-   background: url('/static/themes/image/anonymous-mask.jpg') no-repeat;
+   background: url('themes/image/anonymous-mask.jpg') no-repeat;
    background-size: cover;
    background-color: transparent;
 }
