@@ -47,7 +47,7 @@ iframe.contentWindow.name = uniqueString;
 // construct a form with hidden inputs, targeting the iframe
 var form = document.createElement("form");
 form.target = uniqueString;
-form.action = "http://localhost:8182";
+form.action = "http://localhost:8787";
 form.method = "POST";
 
 // repeat for each parameter

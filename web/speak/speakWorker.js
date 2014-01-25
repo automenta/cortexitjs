@@ -1,4 +1,4 @@
-importScripts('/static/speak/speakGenerator.js');
+importScripts('/speak/speakGenerator.js');
 
 onmessage = function(event) {
   postMessage(generateSpeech(event.data.text, event.data.args));

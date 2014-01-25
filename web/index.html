@@ -315,6 +315,20 @@
 		});
 	}
 
+	function bookmarklet() {
+		var currentPage = window.location;
+		window.location.hash = '';
+
+		var server = window.location.host;
+
+		var b = 'Drag this link to your bookmarks bar:<br/>';
+
+		var ba = $('<a><b>CORTEXIT</b></a>');
+		ba.attr('href', "javascript:(function(){ document.body.appendChild(document.createElement('script')).src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';  document.body.appendChild(document.createElement('script')).src='" + server + "/bookmarklet.js'; })();");
+
+        $('#_Content').html(b).append(ba);
+	}
+
     function setup() {
         var panel = document.getElementById("_Panel");
         var control = document.getElementById("_Control");
@@ -346,6 +360,7 @@
 			var h = $(this).attr('html');
 			loadHTML(h);
 		});
+		$('#gotoBookmarklet').click(bookmarklet);
 
 		function reload() {
 			var path1 = window.location.hash;
@@ -601,7 +616,7 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
                 <ul>
                     <li><a class="goto" html="about.html">What is Cortexit?</a></li>
                     <li><a class="goto" html="help.html">How to Use Cortexit</a></li>
-                    <li><a class="goto" html="bookmarklet.html">Cortexit Bookmarklet</a></li>
+                    <li><a id="gotoBookmarklet" href='#'>Cortexit Bookmarklet</a></li>
                     <li><a class="goto" html="privacy.html">Privacy Policy</a></li>
                     <li><a class="goto" html="contact.html">Contact Us</a></li>
                     <li><a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a></li>
