@@ -1,3 +1,4 @@
+<title>Cortexit</title>
 <link rel="stylesheet" type="text/css" href="cortexit.css" />
 <link rel="shortcut icon" href="favicon.ico" />
 <script type='text/javascript' src='animator.js'></script>
@@ -204,7 +205,6 @@
     
     function updateFonts() {
         updateFont( document.getElementById("_Content") );
-        updateFont( document.getElementById("_TextZoom") );       
         updateFont( document.getElementById("_GoInput") );  //TODO this is a hack, use JQuery selector for all input-box classes. see go.html
         updateFont( document.getElementById("_GoInputButton") );  //TODO this is a hack, use JQuery selector for all input-box classes. see go.html
     }
@@ -334,7 +334,6 @@
         var control = document.getElementById("_Control");
         var content = document.getElementById("_Content");
         var frameSpin = document.getElementById("Status");
-        var textzoom = document.getElementById("_TextZoom");
         var font = document.getElementById("_Font");
 
         if (frameSpin.addEventListener) {
@@ -354,13 +353,17 @@
         }
 
         content.style.fontSize = fontSize + "px";
-        textzoom.style.fontSize = content.style.fontSize;
 
 		$('.goto').click(function() {
 			var h = $(this).attr('html');
 			loadHTML(h);
 		});
+
 		$('#gotoBookmarklet').click(bookmarklet);
+		
+		$('#ToggleMenuButton').click(function() {
+			$('#Menu').toggle(); //("puff", 250);
+		});
 
 		function reload() {
 			var path1 = window.location.hash;
@@ -569,116 +572,120 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
 
 <body onload="setup();">
     
-    <div id="_Top" class="menu">
-            
-        <ul>
-            <li><a class="tooltip goto" html="about.html"><img width="48px" height="48px" src="icons/link.png" alt="Go..."/><span>Go...</span></a></li>
-            <!--
-            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/play.png" alt="Play"/><span>Auto-play</span></a></li>
-            -->
-            <!--
-            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/mode.png" alt="Mode"/><span>Mode</span></a>
-                <ul>
-                    <li><a href="javascript:setMode()">One Sentence</a></li>
-                    <li><a href="javascript:setMode()">Two Sentences</a></li>
-                    <li><a href="javascript:setMode()">One Word</a></li>
-                    <li><a href="javascript:setMode()">Two Words</a></li>
-                    <li><a href="javascript:setMode()">Three Words</a></li>
-                </ul>
-            </li>
-            -->
-            <li><a href="#" class="tooltip"><img id="speaker_icon" width="48px" height="48px" src="icons/speak.png" alt="Speak"/><span>Speech</span></a>
-                <ul>
-                    <li><a href="javascript:speakSpeech(function() {})">Speak.js Speech (once)</a></li>
-                    <li><a href="javascript:startSpeakAutoSpeech()">Start Speak.js Autoplay</a></li>
-                    <li><a href="javascript:stopSpeakAutoSpeech()">Stop</a></li>
-                    <li><a href="javascript:toggleVozmeSpeech()">Toggle VozMe Speech</a></li>
-                </ul>
-            </li> 
-            <li><a href="javascript:addImagesForSelection();" class="tooltip"><img width="48px" height="48px" src="icons/picture.png" alt="Images"/><span>Images</span></a></li>
-            <li><a href="#" class="tooltip"><img width="48px" height="48px" src="icons/colors.png" title="Theme"/><span>Theme</span></a>
-                <ul>
-                    <li><a href="javascript:setTheme('default-black')">White on Black</a></li>
-                    <li><a href="javascript:setTheme('default-white')">Black on White</a></li>
-                    <li><a href="javascript:setTheme('terminal-green')">Terminal Green</a></li>
-                    <li><a href="javascript:setTheme('earthspace')">Earth Space</a></li>
-                    <li><a href="javascript:setTheme('concrete')">Concrete</a></li>
-                    <li><a href="javascript:setTheme('chalkboard')">Chalkboard</a></li>
-                    <li><a href="javascript:setTheme('anonymous')">Anonymous</a></li>
-                </ul>
-            </li>
-            <!--
-            <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/earth.png" alt="Translate"/><span>Translate</span></a>
-            -->
-            <li><a href="javascript:toggleEdit();" class="tooltip"><img width="48px" height="48px" src="icons/edit.png" alt="Edit"/><span>Edit</span></a>
-            <li><a href="javascript:shareIt();" class="tooltip"><img width="48px" height="48px" src="icons/share.png" alt="Share"/><span>Share</span></a>
-            <li><a href="#" class="tooltip"><img width="48px" height="48px" src="icons/question.png" alt="Help"/><span>Help</span></a>
-                <ul>
-                    <li><a class="goto" html="about.html">What is Cortexit?</a></li>
-                    <li><a class="goto" html="help.html">How to Use Cortexit</a></li>
-                    <li><a id="gotoBookmarklet" href='#'>Cortexit Bookmarklet</a></li>
-                    <li><a class="goto" html="privacy.html">Privacy Policy</a></li>
-                    <li><a class="goto" html="contact.html">Contact Us</a></li>
-                    <li><a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a></li>
-                </ul>
-            </li>
-        </ul>
-        
-        
-    </div>
     
-    
-    <div id="Return">
-        <a href="javascript:visitOriginal();">X</a>
-    </div>
 		
     
     <div id="_Panel">
-        <div id="_TextZoom">
-        </div>
-        <section id="_Content" contentEditable="false" onMouseOver="onContentMouseOver(this);" onMouseOut="onContentMouseOut(this);">
+        <div id="_Content" contentEditable="false" onMouseOver="onContentMouseOver(this);" onMouseOut="onContentMouseOut(this);">
             <div id="Loading"><center>Loading...</center></div>
-        </section>
+        </div>
     </div>
 
     <div id="_Bottom" style="">
-        <table width="100%" id="_Control" border="0">
-            <tr>
-                <td width="10%" align="left" id="_Prev">
+		<div>&nbsp;</div>
+        <div id="_Prev">
 
-                </td>
-                <td width="25%" align="center" id="Status">
+        </div>
+        <div id="Status">
 
-                </td>
-                <td width="10%" align="right" id="_Next">
+        </div>
+        <div id="_Next">
 
-                </td>
-                <td width="10%" align="center">
-                    &nbsp;
-                </td>
-                <td width="10%" align="left">
-                    <a href="javascript:fontSmaller()"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
-                </td>
-                <td width="25%" align="center" id="_Font" >                    
-                    &nbsp; Abc &nbsp;
-                </td>
-                <td width="10%" align="right">
-                    <a href="javascript:fontLarger()"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
-                </td>
-            </tr>
-        </table>
+        </div>
+        <div>
+            <button id="ToggleMenuButton">_o_</button>
+        </div>
+        <div>
+            <a href="javascript:fontSmaller()"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
+        </div>
+        <div id="_Font" >
+            &nbsp; Abc &nbsp;
+        </div>
+        <div>
+            <a href="javascript:fontLarger()"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
+        </div>
+		<div>&nbsp;</div>
+
+
+		<div id="Menu">
+
+			<div>		        
+			    <a class="tooltip goto" html="about.html"><img width="48px" height="48px" src="icons/link.png" alt="Go..."/><span>Go...</span></a>
+			</div>
+
+		    <!--
+		    <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/play.png" alt="Play"/><span>Auto-play</span></a></li>
+		    -->
+		    <!--
+		    <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/mode.png" alt="Mode"/><span>Mode</span></a>
+		        <ul>
+		            <li><a href="javascript:setMode()">One Sentence</a></li>
+		            <li><a href="javascript:setMode()">Two Sentences</a></li>
+		            <li><a href="javascript:setMode()">One Word</a></li>
+		            <li><a href="javascript:setMode()">Two Words</a></li>
+		            <li><a href="javascript:setMode()">Three Words</a></li>
+		        </ul>
+		    </li>
+		    -->
+			<div>
+			    <a href="#" class="tooltip"><img id="speaker_icon" width="48px" height="48px" src="icons/speak.png" alt="Speak"/><span>Speech</span></a>
+				<br/>
+	            <a href="javascript:speakSpeech(function() {})">Speak.js Speech (once)</a>
+	            <a href="javascript:startSpeakAutoSpeech()">Start Speak.js Autoplay</a>
+	            <a href="javascript:stopSpeakAutoSpeech()">Stop</a>
+	            <a href="javascript:toggleVozmeSpeech()">Toggle VozMe Speech</a>
+			</div>
+		    
+		    <div>
+				<a href="javascript:addImagesForSelection();" class="tooltip"><img width="48px" height="48px" src="icons/picture.png" alt="Images"/><span>Images</span></a>
+			</div>
+
+		    <div>
+				<a href="#" class="tooltip"><img width="48px" height="48px" src="icons/colors.png" title="Theme"/><span>Theme</span></a>
+				<br/>
+	            <a href="javascript:setTheme('default-black')">White on Black</a>
+	            <a href="javascript:setTheme('default-white')">Black on White</a>
+	            <a href="javascript:setTheme('terminal-green')">Terminal Green</a>
+	            <a href="javascript:setTheme('earthspace')">Earth Space</a>
+	            <a href="javascript:setTheme('concrete')">Concrete</a>
+	            <a href="javascript:setTheme('chalkboard')">Chalkboard</a>
+	            <a href="javascript:setTheme('anonymous')">Anonymous</a>
+		    </div>
+		    <!--
+		    <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/earth.png" alt="Translate"/><span>Translate</span></a>
+		    -->
+		    <div><a href="javascript:toggleEdit();" class="tooltip"><img width="48px" height="48px" src="icons/edit.png" alt="Edit"/><span>Edit</span></a></div>
+		    <div><a href="javascript:shareIt();" class="tooltip"><img width="48px" height="48px" src="icons/share.png" alt="Share"/><span>Share</span></a></div>
+		    <div>
+				<a href="#" class="tooltip"><img width="48px" height="48px" src="icons/question.png" alt="Help"/><span>Help</span></a>
+		        <br/>
+	            <a class="goto" html="about.html">What is Cortexit?</a>
+	            <a class="goto" html="help.html">How to Use Cortexit</a>
+	            <a id="gotoBookmarklet" href='#'>Cortexit Bookmarklet</a>
+	            <a class="goto" html="privacy.html">Privacy Policy</a>
+	            <a class="goto" html="contact.html">Contact Us</a>
+		    </div>
+
+			<!--      
+			<div id="Return">
+			    <a href="javascript:visitOriginal();">X</a>
+			</div>
+			-->      
+		    
+		</div>
 
     </div>
     
-    <span id="_Speech">
-    </span>
+    <span id="_Speech"></span>
     <div id="audio" style="display:none"></div>
     
+	<!-- 
     <div id="share-modal" title="Share...">
         <div id="attbtext"></div>
         <span id="attb"></span>        
         <a id="atlink"></a>
     </div>
+	-->
 
 </body>
 

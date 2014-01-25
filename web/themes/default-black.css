@@ -12,7 +12,6 @@ a {
 
 
 body {
-   margin: 1%;
    background-color: #333;
 }
 
@@ -25,7 +24,7 @@ body {
     color: white;
 }
 #_Bottom {
-    background-color: transparent;
+    background-color: rgba(0,0,0,0.75);
 }
 
 #StatusHover {

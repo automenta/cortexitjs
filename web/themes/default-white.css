@@ -1,5 +1,4 @@
 body {
-    margin: 0%;
     background: white;
 }
 
@@ -9,8 +8,11 @@ body {
 }
 
 a {
-    color: #333;
+    color: #222;
 }
+
+#Status, #_Font { color: black; }
+
 
 .ContentHighlighted {
     background-color: #ddd;

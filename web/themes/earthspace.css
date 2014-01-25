@@ -15,9 +15,7 @@
 #_Panel {
     color: #E2A848;
     font-family: monospace;
-    background-color: rgba(0,0,0,0.55);
-    
-    border: 5px solid green;
+    background-color: rgba(0,0,0,0.55);    
 }
 
 #_Panel a {
@@ -27,7 +25,7 @@
 }
 
 body {
-   background: url('themes/image/earth.jpg') no-repeat;
+   background: url('image/earth.jpg') no-repeat;
    background-size: cover;
    background-color: transparent;
 }

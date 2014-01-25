@@ -16,7 +16,7 @@
 #_Panel {
     color: #eee;
     font-family: 'Love Ya Like A Sister', cursive;
-    background: url('themes/image/chalkboard.png') no-repeat;
+    background: url('image/chalkboard.png') no-repeat;
     background-size: cover;
     background-color: transparent;
 }
@@ -27,9 +27,6 @@
     font-weight: bold;
 }
 
-#_Content {
-    margin: 65px;   
-}
 
 body {
    background-color: black;
