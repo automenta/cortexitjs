@@ -134,7 +134,7 @@
 
 			if (target.indexOf('http://') == 0) {
 				//absolute
-				a.attr('href', '/#' + target);
+				a.attr('href', '#' + target);
 			}
 			else if (target.indexOf('/') == 0) {
 				//absolute on the server
@@ -143,11 +143,11 @@
 					server = server.substring(7);
 				if (server.indexOf('/')!=-1)
 					server = server.substring(0, server.indexOf('/'));
-				a.attr('href', '/#' + server + target);
+				a.attr('href', '#' + server + target);
 			}
 			else {
 				//relative
-				a.attr('href', '/#' + currentPage + target);
+				a.attr('href', '#' + currentPage + target);
 			}
 		});
         
