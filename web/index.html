@@ -1,3 +1,5 @@
+<html>
+<head>
 <title>Cortexit</title>
 <link rel="stylesheet" type="text/css" href="cortexit.css" />
 <link rel="shortcut icon" href="favicon.ico" />
@@ -6,7 +8,10 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
 
 <link id="themeCSS" rel="stylesheet" type="text/css"  />
+
 <script>
+
+	var sentencizer = new Worker('sentencize.js');
 
     var defaultTheme = 'default-black';
     var minFrameLength = 8;
@@ -19,8 +24,10 @@
     var speechEnabled = false;
 	var currentPage = '';
 
-	var sentencizer = new Worker('sentencize.js');
     var stopAutospeech = false;
+
+    var qI = 0;
+    var editing = false;
 
     function enableVozmeSpeech(line) {
         speechEnabled = true;
@@ -194,8 +201,6 @@
     
     function updateFonts() {
         updateFont( document.getElementById("_Content") );
-        updateFont( document.getElementById("_GoInput") );  //TODO this is a hack, use JQuery selector for all input-box classes. see go.html
-        updateFont( document.getElementById("_GoInputButton") );  //TODO this is a hack, use JQuery selector for all input-box classes. see go.html
     }
 
     function fontLarger() {
@@ -216,6 +221,8 @@
     }
 
     function onFrameSpin(e) {
+		if (cframes.length == 1) return;
+
         var nDelta = 0;
         if (!e) { // For IE, access the global (window) event object
             e = window.event;
@@ -277,11 +284,84 @@
         e.returnValue = false;  // cancel default action
     }
 
-	function loadHTML(url) {
+	function loadHTML(url, whenFinished) {
+		currentPage = url;
+		window.location.hash = '';
+
 		$.get(url, function(hh) {
 			cframes =  [hh];
 			showFrame(0);
+
+			if (url == 'about.html') {
+				var inputs = $('<div></div>');
+
+				var inputter = $('<span/>');
+
+				var goselect = $('<select style="font-size:100%">');
+				goselect.append('<option>URL</option>');
+				goselect.append('<option>Text</option>');
+			
+				var goinput = $('<input type="text" placeholder="Website Address" style="font-size: 100%" />');
+
+				var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 6em"/>');
+
+				var gobutton = $('<input type="submit" value="Go" style="font-size:100%"/>')
+				
+				function updateInputs() {
+					inputter.empty();
+					if (goselect.val() == 'URL') {
+						gobutton.css('float','');
+						inputter.append(goinput);					
+					}
+					else if (goselect.val() == 'Text') {
+						gobutton.css('float','right');
+						inputter.append('<br/>');
+						inputter.append(gotextinput);
+						inputter.append('<br/>');
+					}
+				}
+
+				goselect.change(function() {					
+					updateInputs();
+				});
+
+				goinput.keypress(function(e) {
+					if(e.which == 13) {
+						gobutton.click();
+					}
+				});
+
+				gobutton.click(function() {
+					if (goselect.val() == 'URL') {
+						loadURL(goinput.val());
+					}
+					else {
+						loadText(gotextinput.val());
+					}
+				});
+			
+				updateInputs();
+
+				inputs.append(goselect, inputter, gobutton);
+
+				$('#_Content').prepend(inputs);
+			}
+
+			if (whenFinished)
+				whenFinished();
 		});
+	}
+
+	function loadText(s) {
+        $('#_Content').html('<div id="Loading"><center>Processing...</center></div>');
+
+		sentencizer.addEventListener('message', function(e) {
+			cframes = e.data;
+			currentFrame = -1;
+			goNext();
+		}, false);
+
+		sentencizer.postMessage(s);
 	}
 
 	function loadURL(u) {
@@ -294,13 +374,7 @@
 			u = 'http://' + u;
 
 		$.post('proxy.php', { url: u }).done(function(s) {
-			sentencizer.addEventListener('message', function(e) {
-				cframes = e.data;
-				currentFrame = -1;
-				goNext();
-			}, false);
-
-			sentencizer.postMessage(s);
+			loadText(s);
 		});
 	}
 
@@ -318,68 +392,11 @@
         $('#_Content').html(b).append(ba);
 	}
 
-    function setup() {
-        var panel = document.getElementById("_Panel");
-        var control = document.getElementById("_Control");
-        var content = document.getElementById("_Content");
-        var frameSpin = document.getElementById("Status");
-        var font = document.getElementById("_Font");
-
-        if (frameSpin.addEventListener) {
-            frameSpin.addEventListener('DOMMouseScroll', onFrameSpin, false);
-            frameSpin.addEventListener('mousewheel', onFrameSpin, false); // Chrome
-        }
-        else {
-            frameSpin.onmousewheel = onFrameSpin;
-        }
-
-        if (font.addEventListener) {
-            font.addEventListener('DOMMouseScroll', onFontSpin, false);
-            font.addEventListener('mousewheel', onFontSpin, false); // Chrome
-        }
-        else {
-            font.onmousewheel= onFontSpin;
-        }
-
-        content.style.fontSize = fontSize + "px";
-
-		$('.goto').click(function() {
-			var h = $(this).attr('html');
-			loadHTML(h);
-		});
-
-		$('#gotoBookmarklet').click(bookmarklet);
-		
-		$('#ToggleMenuButton').click(function() {
-			$('#Menu').toggle(); //("puff", 250);
-		});
-
-		function reload() {
-			var path1 = window.location.hash;
-			var path = window.location.pathname.substring(1);
-
-			if (path1.length > 0) {
-				path1 = path1.substring(1);
-				loadURL(path1);
-			}
-			else if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
-				loadURL(path);
-			}
-			else {
-				loadHTML('about.html');
-			}
-		}
-
-		window.onhashchange = function() {	reload();	};
-		reload();
-
-    }
 
     function enlargeImage(element, imagesrc) {
         element.innerHTML = '<img src=\"' + imagesrc + '\"/>';
     }
     
-    var qI = 0;
 
     function addImagesForSelection() {
         //TODO filter 'q' for useless prepositions like 'the', 'and', etc
@@ -429,20 +446,16 @@
         }
         
         if (!editing) {
-            if (keycode == 37) {
-                //left
-                goPrevious();
+            if (keycode == 37) { //left                
+                goPrevious(); 
             }
-            else if (keycode == 38) {
-                //up
+            else if (keycode == 38) { //up                
                 fontLarger();
             }
-            else if (keycode == 39) {
-                //right
+            else if (keycode == 39) { //right                
                 goNext();
             }
-            else if (keycode == 40) {
-                //down
+            else if (keycode == 40) { //down                
                 fontSmaller();
             }
         }
@@ -478,7 +491,6 @@
 //    </div>
 
 
-    var editing = false;
     function toggleEdit() {
         //id="_Content" contentEditable="false"        
         if (editing) {
@@ -526,18 +538,93 @@
         
     }
 
-//setup theme
-var currentTheme = localStorage['theme'];
-if (currentTheme == null) {
-    currentTheme = 'default-black';
-}
-setTheme(currentTheme);
+	//setup theme
+	var currentTheme = localStorage['theme'];
+	if (currentTheme == null) {
+		currentTheme = 'default-black';
+	}
+	setTheme(currentTheme);
 
-$(document).ready(function(){
-      //$('#_Top').fadeToggle();
-      //$('#_Bottom').fadeToggle();
-      $('#_Speech').fadeToggle();    
-});
+	$(document).ready(function(){
+
+        var panel = document.getElementById("_Panel");
+        var control = document.getElementById("_Control");
+        var content = document.getElementById("_Content");
+        var frameSpin = document.getElementById("Status");
+        var font = document.getElementById("_Font");
+
+        if (frameSpin.addEventListener) {
+            frameSpin.addEventListener('DOMMouseScroll', onFrameSpin, false);
+            frameSpin.addEventListener('mousewheel', onFrameSpin, false); // Chrome
+        }
+        else {
+            frameSpin.onmousewheel = onFrameSpin;
+        }
+
+        if (font.addEventListener) {
+            font.addEventListener('DOMMouseScroll', onFontSpin, false);
+            font.addEventListener('mousewheel', onFontSpin, false); // Chrome
+        }
+        else {
+            font.onmousewheel= onFontSpin;
+        }
+
+        content.style.fontSize = fontSize + "px";
+
+		$('.goto').click(function() {
+			var h = $(this).attr('html');
+			loadHTML(h);
+		});
+
+		$('#gotoBookmarklet').click(bookmarklet);
+
+		$('#ToggleMenuButton').click(function() {
+			$('#Menu').toggle(); //("puff", 250);
+		});
+		
+		function hoverOpacity(x) {
+			if (typeof x == "string")
+				x = $(x);
+
+			x.fadeTo(0, 0.5);
+			x.hover(
+				function() { x.fadeTo(250, 1.0); },
+				function() { x.fadeTo(250, 0.5); }
+			);
+		}
+
+		hoverOpacity('#ToggleMenuButton');
+		hoverOpacity('#_Prev');
+		hoverOpacity('#_Next');
+		hoverOpacity('#FontSmallerButton');
+		hoverOpacity('#FontLargerButton');
+
+		$('#Menu img').each(function() {			
+			hoverOpacity($(this));
+		});
+
+  	    $('#_Speech').fadeToggle();    
+
+		function reload() {
+			var path1 = window.location.hash;
+			var path = window.location.pathname.substring(1);
+
+			if (path1.length > 0) {
+				path1 = path1.substring(1);
+				loadURL(path1);
+			}
+			else if ((path.indexOf('http://')==0) || (path.indexOf('www.')==0)) {
+				loadURL(path);
+			}
+			else {
+				loadHTML('about.html');
+			}
+		}
+
+		window.onhashchange = function() {	reload();	};
+		reload();
+
+	});
 
 </script>
 
@@ -557,12 +644,9 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
 
 
 </script>
+</head>
 
-
-<body onload="setup();">
-    
-    
-		
+<body>
     
     <div id="_Panel">
         <div id="_Content" contentEditable="false" onMouseOver="onContentMouseOver(this);" onMouseOut="onContentMouseOut(this);">
@@ -584,13 +668,13 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
         <div>
             <button id="ToggleMenuButton">_o_</button>
         </div>
-        <div>
+        <div id="FontSmallerButton">
             <a href="javascript:fontSmaller()"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
         </div>
         <div id="_Font" >
             &nbsp; Abc &nbsp;
         </div>
-        <div>
+        <div id="FontLargerButton">
             <a href="javascript:fontLarger()"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
         </div>
 		<div>&nbsp;</div>
@@ -681,3 +765,5 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
 <!-- <link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" /> -->
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 <!--<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=[PROFILE ID]"></script>-->
+
+</html>
