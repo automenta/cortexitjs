@@ -1,3 +1,5 @@
+
+
 function sentencize(str) {
    //str=str.replace(/\n/g, " ");
    //str=str.replace(/\r/g, " ");
@@ -21,15 +23,8 @@ function sentencize(str) {
    str=str.replace(/<(.*?)>/g, "");
 
    var linesPreFilter = str.split("\n");
-   var slines = [];
-   var i;
-   for (i = 0; i < linesPreFilter.length; i++) {
-	   var t = linesPreFilter[i].trim();               
-	   if (t.length > 0) {
-	       slines.push(t);
-	   }                  
-   }
-   return slines;      
+   return linesPreFilter;
+
 }
 
 self.addEventListener('message', function(e) {

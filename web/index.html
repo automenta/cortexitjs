@@ -14,7 +14,10 @@
 	var sentencizer = new Worker('sentencize.js');
 
     var defaultTheme = 'default-black';
+
     var minFrameLength = 8;
+	var combineWhileLessThanChars = 70;
+
     var pageurl = 'http://cortexit.org';
 
     var fontSize = 60;
@@ -303,7 +306,7 @@
 			
 				var goinput = $('<input type="text" placeholder="Website Address" style="font-size: 100%" />');
 
-				var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 6em"/>');
+				var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 10em"/>');
 
 				var gobutton = $('<input type="submit" value="Go" style="font-size:100%"/>')
 				
@@ -356,9 +359,41 @@
         $('#_Content').html('<div id="Loading"><center>Processing...</center></div>');
 
 		sentencizer.addEventListener('message', function(e) {
-			cframes = e.data;
-			currentFrame = -1;
-			goNext();
+
+			   var linesPreFilter = e.data;
+			   function textize(t) {
+					t = t.replace(/{{/g, '<').replace(/}}/g, '>');
+					return $('<p>' + t + '</p>').text().trim();
+			   }
+
+			   var linesPreRendered = linesPreFilter.map(textize);
+
+			   var slines = [];
+			   var i;
+			  
+			   for (i = 0; i < linesPreFilter.length; i++) {
+				   	var t = linesPreFilter[i].trim();               
+					if (t.length == 0) continue;
+
+					if (slines.length > 0) {
+						var currentFrameLength = linesPreRendered[i].length;
+						if (currentFrameLength == 0)
+							continue;
+
+						var prevFrameLength = textize(slines[slines.length-1]).length;
+
+						if (prevFrameLength + currentFrameLength < combineWhileLessThanChars) {
+							slines[slines.length-1] += ' ' +  t;
+							continue;
+						}
+					}
+
+					slines.push(t);
+			   }
+
+				cframes = slines;
+				currentFrame = -1;
+				goNext();
 		}, false);
 
 		sentencizer.postMessage(s);
@@ -505,6 +540,9 @@
 
 
     function shareIt() {
+		alert('Share feature not available yet.');
+		return;
+
         $('#atbutton').css('display', 'inline');
         //var c = cframes[currentFrame];
         var c = $('#_Content').text();
@@ -734,7 +772,7 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
 		        <br/>
 	            <a class="goto" html="about.html">What is Cortexit?</a>
 	            <a class="goto" html="help.html">How to Use Cortexit</a>
-	            <a id="gotoBookmarklet" href='#'>Cortexit Bookmarklet</a>
+	            <!-- <a id="gotoBookmarklet" href='#'>Cortexit Bookmarklet</a> -->
 	            <a class="goto" html="privacy.html">Privacy Policy</a>
 	            <a class="goto" html="contact.html">Contact Us</a>
 		    </div>
