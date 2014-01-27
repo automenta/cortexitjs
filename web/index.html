@@ -31,6 +31,8 @@
 
     var qI = 0;
     var editing = false;
+	var autosizing;
+
 
     function enableVozmeSpeech(line) {
         speechEnabled = true;
@@ -105,7 +107,6 @@
 		var heightTolerancePX = 0.1 * ph;
 		var maxIterations = 20;
 		var fontChange = 10;
-		var trying;
 		var lastDirection = 0;
 
 		function trynext() {
@@ -116,7 +117,7 @@
 			var pY = ph - bh - heightTolerancePX;
 
 			if (fontChange == 0) {
-				clearInterval(trying);
+				clearInterval(autosizing);
 				return;
 			}
 
@@ -139,14 +140,14 @@
 				lastDirection = 1;
 			}
 			else {
-				clearInterval(trying);
+				clearInterval(autosizing);
 			}
 
 			if (maxIterations-- == 0)
-				clearInterval(trying);
+				clearInterval(autosizing);
 		}
 
-		trying = setInterval(trynext, 100);
+		autosizing = setInterval(trynext, 100);
 		trynext();
 	}
 
@@ -212,6 +213,10 @@
 			}
 		});
         
+		if ($('#_Font input').is(':checked')) {
+			autosize();
+		}
+
 		$('#_Content').fadeIn("slow");
 
     }
@@ -627,6 +632,8 @@
         
     }
 
+
+
 	//setup theme
 	var currentTheme = localStorage['theme'];
 	if (currentTheme == null) {
@@ -660,8 +667,21 @@
 
         content.style.fontSize = fontSize + "px";
 
-		$("#_Font").click(function() {
+		$("#_Font span").click(function() {
 			autosize();
+		});
+
+		function updateAutosizeIfChecked() {
+			if ($('#_Font input').is(':checked')) {
+				autosize();
+				localStorage['autosize'] = 'true';
+			}
+			else
+				localStorage['autosize'] = 'false';
+		}
+
+		$('#_Font input').change(function() {
+			updateAutosizeIfChecked();
 		});
 
 		$('.goto').click(function() {
@@ -673,6 +693,7 @@
 
 		$('#ToggleMenuButton').click(function() {
 			$('#Menu').toggle(); //("puff", 250);
+			updateAutosizeIfChecked();
 		});
 		
 		function hoverOpacity(x) {
@@ -713,6 +734,11 @@
 				loadHTML('about.html');
 			}
 		}
+
+		if (localStorage['autosize'] == 'true')
+			$('#_Font input').prop('checked', true);
+		else
+			$('#_Font input').prop('checked', false);
 
 		window.onhashchange = function() {	reload();	};
 		reload();
@@ -765,7 +791,9 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
             <a href="javascript:fontSmaller()"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
         </div>
         <div id="_Font" >
-            &nbsp; Abc &nbsp;
+            <span>&nbsp; Abc</span>
+			<input type="checkbox" title="Auto-Size"/>
+   		    &nbsp;
         </div>
         <div id="FontLargerButton">
             <a href="javascript:fontLarger()"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
