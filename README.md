@@ -42,3 +42,11 @@ This starts a webserver on port 8787 which you can visit at: http://localhost:87
 PHP Setup
 ---------
 Copy the web/ folder to a PHP-hosted web server. ( index.html accesses proxy.php )
+
+
+Embedded Browser Support
+------------------------
+Chrome and Firefox need to have their security deactivated to allow reading selected text in an iframe.  Yes it's pretty stupid that browser software won't give you access to your own data in your own computer.  So here's the inconvenient work-around:
+*   Windows: C:\Users\YOUR_USER\AppData\Local\Google\Chrome\Application\chrome.exe --allow-file-access-from-files --disable-web-security
+*   Linux: google-chrome --allow-file-access-from-files --disable-web-security
+
