@@ -134,3 +134,8 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
     float: right;
     margin-bottom: 15px;
 }
+
+#BrowserIFrame {
+	width: 100%;
+	height: 100%;
+}

@@ -15,6 +15,8 @@
 
     var defaultTheme = 'default-black';
 
+	var defaultPage = 'about.html';
+
     var minFrameLength = 8;
 	var combineWhileLessThanChars = 70;
 
@@ -111,10 +113,11 @@
 
 		function trynext() {
 			var cw = $('#_Content').width();
+			var th = $('#Top').height();
 			var ch = $('#_Content').height();
 			var bh = $('#_Bottom').height();
 
-			var pY = ph - bh - heightTolerancePX;
+			var pY = ph - th - bh - heightTolerancePX;
 
 			if (fontChange == 0) {
 				clearInterval(autosizing);
@@ -147,6 +150,7 @@
 				clearInterval(autosizing);
 		}
 
+		clearInterval(autosizing);
 		autosizing = setInterval(trynext, 100);
 		trynext();
 	}
@@ -351,60 +355,6 @@
 			cframes =  [hh];
 			showFrame(0);
 
-			if (url == 'about.html') {
-				var inputs = $('<div></div>');
-
-				var inputter = $('<span/>');
-
-				var goselect = $('<select style="font-size:100%">');
-				goselect.append('<option>URL</option>');
-				goselect.append('<option>Text</option>');
-			
-				var goinput = $('<input type="text" placeholder="Website Address" style="font-size: 100%" />');
-
-				var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 10em"/>');
-
-				var gobutton = $('<input type="submit" value="Go" style="font-size:100%"/>')
-				
-				function updateInputs() {
-					inputter.empty();
-					if (goselect.val() == 'URL') {
-						gobutton.css('float','');
-						inputter.append(goinput);					
-					}
-					else if (goselect.val() == 'Text') {
-						gobutton.css('float','right');
-						inputter.append('<br/>');
-						inputter.append(gotextinput);
-						inputter.append('<br/>');
-					}
-				}
-
-				goselect.change(function() {					
-					updateInputs();
-				});
-
-				goinput.keypress(function(e) {
-					if(e.which == 13) {
-						gobutton.click();
-					}
-				});
-
-				gobutton.click(function() {
-					if (goselect.val() == 'URL') {
-						loadURL(goinput.val());
-					}
-					else {
-						loadText(gotextinput.val());
-					}
-				});
-			
-				updateInputs();
-
-				inputs.append(goselect, inputter, gobutton);
-
-				$('#_Content').prepend(inputs);
-			}
 
 			if (whenFinished)
 				whenFinished();
@@ -412,6 +362,7 @@
 	}
 
 	function loadText(s) {
+		$('#Browser').html('').hide();
         $('#_Content').html('<div id="Loading"><center>Processing...</center></div>');
 
 		sentencizer.addEventListener('message', function(e) {
@@ -456,6 +407,8 @@
 	}
 
 	function loadURL(u) {
+		$('#Browser').html('').hide();
+
 		currentPage = u;
 		window.location.hash = u;
 
@@ -594,6 +547,31 @@
         }
     }
 
+	function getIFrameSelection() {
+		var iframe= document.getElementById('BrowserIFrame');
+		var frameWindow = iframe.contentWindow;
+		var frameDocument = frameWindow.document;
+
+		var s = '';
+		if (frameDocument.getSelection) {
+		    s = frameDocument.getSelection();
+		}
+		else if (frameDocument.selection) {
+		    s = frameDocument.selection.createRange().text;
+		}
+		return s.toString();
+	}
+
+	function goURL(u) {
+		$('#_Content').html('').hide();
+
+		if ((u.indexOf('http://')!=0) && (u.indexOf('https://')!=0))
+			u = 'http://' + u;
+
+		$('#Browser')
+			.html('<iframe id="BrowserIFrame" src="' + u + '"></iframe>')
+			.show();
+	}
 
     function shareIt() {
 		alert('Share feature not available yet.');
@@ -637,7 +615,7 @@
 	//setup theme
 	var currentTheme = localStorage['theme'];
 	if (currentTheme == null) {
-		currentTheme = 'default-black';
+		currentTheme = defaultTheme;
 	}
 	setTheme(currentTheme);
 
@@ -731,17 +709,81 @@
 				loadURL(path);
 			}
 			else {
-				loadHTML('about.html');
+				loadHTML(defaultPage);
 			}
 		}
 
-		if (localStorage['autosize'] == 'true')
-			$('#_Font input').prop('checked', true);
-		else
+
+		var inputs = $('<div></div>');
+
+		var inputter = $('<span/>');
+
+		var goselect = $('<select style="font-size:100%">');
+		goselect.append('<option>URL</option>');
+		goselect.append('<option>Text</option>');
+	
+		var goinput = $('<input type="text" placeholder="Website Address" style="font-size: 100%" />');
+
+		var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 10em"/>');
+
+		var gobutton = $('<input type="submit" value="Go" style="font-size:100%"/>')
+		var loadbutton = $('<input type="submit" value="Load" style="font-size:100%"/>')
+		
+		function updateInputs() {
+			inputter.empty();
+			if (goselect.val() == 'URL') {
+				gobutton.show();
+				//loadbutton.css('float','');
+				inputter.append(goinput);					
+			}
+			else if (goselect.val() == 'Text') {
+				gobutton.hide();
+				//loadbutton.css('float','right');
+				inputter.append('<br/>');
+				inputter.append(gotextinput);
+				inputter.append('<br/>');
+			}
+		}
+
+		goselect.change(function() {					
+			updateInputs();
+		});
+
+		goinput.keypress(function(e) {
+			if(e.which == 13) {
+				gobutton.click();
+			}
+		});
+
+		gobutton.click(function() {
+			goURL(goinput.val());
+		});
+
+		loadbutton.click(function() {
+			if (goselect.val() == 'URL') {
+				loadURL(goinput.val());
+			}
+			else {
+				loadText(gotextinput.val());
+			}
+		});
+	
+		updateInputs();
+
+		inputs.append(goselect, inputter, gobutton, loadbutton);
+
+		$('#Top').prepend(inputs);
+
+
+		if (localStorage['autosize'] == 'false')
 			$('#_Font input').prop('checked', false);
+		else
+			$('#_Font input').prop('checked', true);
 
 		window.onhashchange = function() {	reload();	};
-		reload();
+
+		goURL('http://en.wikipedia.org');
+		//reload();
 
 	});
 
@@ -766,11 +808,15 @@ if (!document.all) document.captureEvents(Event.MOUSEUP);
 </head>
 
 <body>
+    <div id="Top" style="">
+	</div>
     
     <div id="_Panel">
         <div id="_Content" contentEditable="false" onMouseOver="onContentMouseOver(this);" onMouseOut="onContentMouseOut(this);">
             <div id="Loading"><center>Loading...</center></div>
         </div>
+        <div id="Browser" style="display:none">
+		</div>
     </div>
 
     <div id="_Bottom" style="">

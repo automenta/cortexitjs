@@ -1,0 +1,7 @@
+{
+  "name": "Cortexit",
+  "version": "1.0",
+  "description": "",
+  "manifest_version": 2,
+  "background": { "scripts": ["web/sentencize.js"] }
+}
