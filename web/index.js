@@ -610,6 +610,8 @@ function shareIt() {
 $(document).ready(function(){
 	if (window.location.hash == '#chrome') {
 		chrome = true;
+		$('#Top').hide();
+		$('#Menu').toggle();
 	}
 
 	//setup theme
@@ -789,8 +791,18 @@ $(document).ready(function(){
 
 	window.onhashchange = function() {	reload();	};
 
-	goURL('http://en.wikipedia.org');
-	//reload();
+	if (chrome) {
+		var ii = setInterval(function() {
+			var x = $('#SelectedText').text();
+			if (x.length > 0) {
+				loadText(x);
+				clearInterval(ii);
+			}			
+		}, 100);
+	}
+	else {
+		reload();
+	}
 
 });
 

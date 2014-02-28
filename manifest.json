@@ -3,10 +3,10 @@
   "version": "1.0",
   "description": "",
   "manifest_version": 2,
-  "app": {
-	  "background": { "scripts": [ "cortexit.chrome.js", "web/sentencize.js"] }
+  "background": { "scripts": [ "cortexit.chrome.js" ] },
+  "browser_action": {
+    "default_title": "Cortexit",
+    "default_icon": "web/icons/colors.png"
   },
-  "permissions": [
-	  "webview"
-  ]
+  "permissions": [ "tabs", "activeTab", "http://*/*", "https://*/*" ]
 }
