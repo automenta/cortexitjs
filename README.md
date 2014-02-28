@@ -28,7 +28,7 @@ Usage
 
 Chrome Extension
 ----------------
-*   Download the .CRX file and drag it into the "Extensions" page
+*   [Download](https://github.com/automenta/cortexitjs/releases) the .CRX file and drag it into the Chrome "Extensions" page
 *   Select some text and hit the cortexit button.  A Cortexit window will appear.
 *   For quick activation, set a keyboard shortcut (ex: Alt-C).  The Keyboard Shortcuts setting is at the bottom of the Extensions page.
 
