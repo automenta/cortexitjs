@@ -135,7 +135,7 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
     margin-bottom: 15px;
 }
 
-#BrowserIFrame {
+#BrowserIFrame, #BrowserWebview {
 	width: 100%;
 	height: 100%;
 }
