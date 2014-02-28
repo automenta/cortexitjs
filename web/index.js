@@ -24,6 +24,33 @@ var autosizing;
 
 var chrome = false; //whether running in a chrome extension or not
 
+
+function settings(key, value) {
+	if (value == undefined) {
+		//get
+		if (chrome) {
+			//return chrome.storage.sync.get(key);
+			//TODO message passing
+			return undefined;
+		}
+		else {
+			return localStorage[key];
+		}
+	}
+	else {
+		//set
+		if (chrome) {
+			/*var p = { };
+			p[key] = value;
+			chrome.storage.sync.set(p);	*/
+			//TODO message passing
+		}
+		else {
+			localStorage[key] = value;
+		}
+	}
+}
+
 function enableVozmeSpeech(line) {
     speechEnabled = true;
 
@@ -98,6 +125,7 @@ function autosize() {
 	var maxIterations = 20;
 	var fontChange = 10;
 	var lastDirection = 0;
+	var finished = false;
 
 	function trynext() {
 		var cw = $('#_Content').width();
@@ -107,8 +135,9 @@ function autosize() {
 
 		var pY = ph - th - bh - heightTolerancePX;
 
-		if (fontChange == 0) {
+		if ((fontChange == 0) || (finished)) {
 			clearInterval(autosizing);
+			finished = true;
 			return;
 		}
 
@@ -132,6 +161,7 @@ function autosize() {
 		}
 		else {
 			clearInterval(autosizing);
+			finished = true;
 		}
 
 		if (maxIterations-- == 0)
@@ -139,7 +169,8 @@ function autosize() {
 	}
 
 	clearInterval(autosizing);
-	autosizing = setInterval(trynext, 100);
+	autosizing = setInterval(trynext, 25); //fast mode
+	//autosizing = setInterval(trynext, 100);
 	trynext();
 }
 
@@ -343,6 +374,68 @@ function loadHTML(url, whenFinished) {
 		cframes =  [hh];
 		showFrame(0);
 
+		if ((!chrome) && (url == 'about.html')) {
+			var inputs = $('<div></div>');
+
+			var inputter = $('<span/>');
+
+			var goselect = $('<select style="font-size:100%">');
+			goselect.append('<option>URL</option>');
+			goselect.append('<option>Text</option>');
+
+			var goinput = $('<input type="text" placeholder="Website Address" style="font-size: 100%" />');
+
+			var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 10em"/>');
+
+			//var gobutton = $('<input type="submit" value="Go" style="font-size:100%"/>')
+			var loadbutton = $('<input type="submit" value="Load" style="font-size:100%"/>')
+	
+			function updateInputs() {
+				inputter.empty();
+				if (goselect.val() == 'URL') {
+					//gobutton.show();
+					//loadbutton.css('float','');
+					inputter.append(goinput);					
+				}
+				else if (goselect.val() == 'Text') {
+					//gobutton.hide();
+					//loadbutton.css('float','right');
+					inputter.append('<br/>');
+					inputter.append(gotextinput);
+					inputter.append('<br/>');
+				}
+			}
+
+			goselect.change(function() {					
+				updateInputs();
+			});
+
+			goinput.keypress(function(e) {
+				if(e.which == 13) {
+					gobutton.click();
+				}
+			});
+
+			/*gobutton.click(function() {
+				goURL(goinput.val());
+			});*/
+
+			loadbutton.click(function() {
+				if (goselect.val() == 'URL') {
+					loadURL(goinput.val());
+				}
+				else {
+					loadText(gotextinput.val());
+				}
+			});
+
+			updateInputs();
+
+			inputs.append(goselect, inputter, loadbutton);
+
+			$('#_Content').prepend(inputs);
+
+		}
 
 		if (whenFinished)
 			whenFinished();
@@ -432,7 +525,7 @@ function enlargeImage(element, imagesrc) {
 
 function addImagesForSelection() {
     //TODO filter 'q' for useless prepositions like 'the', 'and', etc
-    var selection = selectedText;
+    var selection = window.getSelection().toString();
     if (selection == '') {
         alert('Select some text to find images.');
         return;
@@ -464,8 +557,7 @@ function setTheme(theme) {
 
     var c = document.getElementById("themeCSS");
     c.href = 'themes/' + theme + '.css';
-	if (!chrome)
-	    localStorage['theme'] = theme;
+    settings('theme', theme);
 }
 
 
@@ -611,13 +703,14 @@ $(document).ready(function(){
 	if (window.location.hash == '#chrome') {
 		chrome = true;
 		$('#Top').hide();
+		$('.speakJS').hide();
 		$('#Menu').toggle();
 	}
 
 	//setup theme
 	var currentTheme;
 	if (!chrome)
-		currentTheme = localStorage['theme'];
+		currentTheme = settings('theme');
 
 	if (currentTheme == null) {
 		currentTheme = defaultTheme;
@@ -648,6 +741,22 @@ $(document).ready(function(){
 
     content.style.fontSize = fontSize + "px";
 
+	$('#fontSmaller').click(function() { fontSmaller(); });
+	$('#fontLarger').click(function() { fontLarger(); });
+	$('#speakSpeech').click(function() { speakSpeech(function() {}); });
+	$('#startSpeakAutoSpeech').click(function() { startSpeakAutoSpeech(); });
+	$('#stopSpeakAutoSpeech').click(function() { stopSpeakAutoSpeech(); });
+	$('#toggleVozmeSpeech').click(function() { toggleVozmeSpeech(); });
+	$('#addImagesForSelection').click(function() { addImagesForSelection(); });
+	$('#toggleEdit').click(function() { toggleEdit(); });
+	$('#shareIt').click(function() { shareIt(); });
+	$("#_Next").click(goNext);
+	$("#_Prev").click(goPrevious);
+
+	$('.setTheme').click(function() {
+		setTheme($(this).attr('theme'));
+	});
+
 	$("#_Font span").click(function() {
 		autosize();
 	});
@@ -655,12 +764,10 @@ $(document).ready(function(){
 	function updateAutosizeIfChecked() {
 		if ($('#_Font input').is(':checked')) {
 			autosize();
-			if (!chrome)
-				localStorage['autosize'] = 'true';
+			settings('autosize', 'true');
 		}
 		else {
-			if (!chrome)
-				localStorage['autosize'] = 'false';
+			settings('autosize', 'false');
 		}
 	}
 
@@ -680,6 +787,10 @@ $(document).ready(function(){
 		updateAutosizeIfChecked();
 	});
 	
+	$(window).resize(function() {
+		updateAutosizeIfChecked();
+	});
+
 	function hoverOpacity(x) {
 		if (typeof x == "string")
 			x = $(x);
@@ -720,76 +831,13 @@ $(document).ready(function(){
 	}
 
 
-	var inputs = $('<div></div>');
-
-	var inputter = $('<span/>');
-
-	var goselect = $('<select style="font-size:100%">');
-	goselect.append('<option>URL</option>');
-	goselect.append('<option>Text</option>');
-
-	var goinput = $('<input type="text" placeholder="Website Address" style="font-size: 100%" />');
-
-	var gotextinput = $('<textarea style="font-size:50%; width: 100%; height: 10em"/>');
-
-	var gobutton = $('<input type="submit" value="Go" style="font-size:100%"/>')
-	var loadbutton = $('<input type="submit" value="Load" style="font-size:100%"/>')
-	
-	function updateInputs() {
-		inputter.empty();
-		if (goselect.val() == 'URL') {
-			gobutton.show();
-			//loadbutton.css('float','');
-			inputter.append(goinput);					
-		}
-		else if (goselect.val() == 'Text') {
-			gobutton.hide();
-			//loadbutton.css('float','right');
-			inputter.append('<br/>');
-			inputter.append(gotextinput);
-			inputter.append('<br/>');
-		}
-	}
-
-	goselect.change(function() {					
-		updateInputs();
-	});
-
-	goinput.keypress(function(e) {
-		if(e.which == 13) {
-			gobutton.click();
-		}
-	});
-
-	gobutton.click(function() {
-		goURL(goinput.val());
-	});
-
-	loadbutton.click(function() {
-		if (goselect.val() == 'URL') {
-			loadURL(goinput.val());
-		}
-		else {
-			loadText(gotextinput.val());
-		}
-	});
-
-	updateInputs();
-
-	inputs.append(goselect, inputter, gobutton, loadbutton);
-
-	$('#Top').prepend(inputs);
-
-
 	var initialAutoSize = false;
-	if (!chrome)
-		initialAutoSize = localStorage['autosize'];
+
+	initialAutoSize = settings('autosize');
 	if (initialAutoSize == 'false')
 		$('#_Font input').prop('checked', false);
 	else
 		$('#_Font input').prop('checked', true);
-
-	window.onhashchange = function() {	reload();	};
 
 	if (chrome) {
 		var ii = setInterval(function() {
@@ -801,6 +849,7 @@ $(document).ready(function(){
 		}, 100);
 	}
 	else {
+		window.onhashchange = function() {	reload();	};
 		reload();
 	}
 

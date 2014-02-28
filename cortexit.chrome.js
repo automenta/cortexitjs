@@ -31,8 +31,18 @@ chrome.extension.onRequest.addListener(
         // text selection is stored in request.selection
         //$('#text').val( request.selection );
 		var s = request.selection;
+		if (s == "") s= "No text selected.";
 
-	    var win = window.open("web/index.html#chrome", "Cortexit", "height=500,width=700");
+		var scale = 0.8;
+		var w = parseInt(screen.width * scale);
+		var h = parseInt(screen.height * scale);
+		var ox = parseInt( (screen.width * (1.0 - scale))/2.0 );
+		var oy = parseInt( (screen.height * (1.0 - scale))/2.0 );
+
+		var p = "height="+h+",width=" + w + ",top=" + oy + ",left=" + ox;
+
+	    var win = window.open("web/index.html#chrome", "_blank", p);
+
 		win.addEventListener('load', function() {
 			win.document.getElementById('SelectedText').innerHTML = s;
 		}, false);

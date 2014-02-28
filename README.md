@@ -24,9 +24,20 @@ You are no longer at the mercy of web designers and authors that insist on writi
 
 Usage
 =====
-*   Visit http://[cortexit] to load the main page.
-*   Visit http://[cortexit]#[URL] to load a specific URL
 
+
+Chrome Extension
+----------------
+*   Download the .CRX file and drag it into the "Extensions" page
+*   Select some text and hit the cortexit button.  A Cortexit window will appear.
+*   For quick activation, set a keyboard shortcut (ex: Alt-C).  The Keyboard Shortcuts setting is at the bottom of the Extensions page.
+
+
+Web Version
+-----------
+*   Visit http://[cortexit] to load the main page.  Here you can enter a URL or paste some text to cortexify.
+*   Visit http://[cortexit]#[URL] to load a specific URL
+ 
 
 Node.JS Setup
 -------------
@@ -42,11 +53,3 @@ This starts a webserver on port 8787 which you can visit at: http://localhost:87
 PHP Setup
 ---------
 Copy the web/ folder to a PHP-hosted web server. ( index.html accesses proxy.php )
-
-
-Embedded Browser Support
-------------------------
-Chrome and Firefox need to have their security deactivated to allow reading selected text in an iframe.  Yes it's pretty stupid that browser software won't give you access to your own data in your own computer.  So here's the inconvenient work-around:
-*   Windows: C:\Users\YOUR_USER\AppData\Local\Google\Chrome\Application\chrome.exe --allow-file-access-from-files --disable-web-security
-*   Linux: google-chrome --allow-file-access-from-files --disable-web-security
-

@@ -38,7 +38,7 @@
             <button id="ToggleMenuButton" title="Toggle Menu">_o_</button>
         </div>
         <div id="FontSmallerButton">
-            <a href="javascript:fontSmaller()"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
+            <a id="fontSmaller"><img src="icons/minus.png" height="32px" width="32px" title="Smaller Font"/></a>
         </div>
         <div id="_Font" >
             <span>&nbsp; Abc</span>
@@ -46,7 +46,7 @@
    		    &nbsp;
         </div>
         <div id="FontLargerButton">
-            <a href="javascript:fontLarger()"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
+            <a id="fontLarger"><img src="icons/plus.png" height="32px" width="32px" title="Larger Font"/></a>
         </div>
 		<div>&nbsp;</div>
 
@@ -74,40 +74,39 @@
 			<div>
 			    <a href="#" class="tooltip"><img id="speaker_icon" width="48px" height="48px" src="icons/speak.png" alt="Speak"/><span>Speech</span></a>
 				<br/>
-	            <a href="javascript:speakSpeech(function() {})">Speak.js Speech (once)</a>
-	            <a href="javascript:startSpeakAutoSpeech()">Start Speak.js Autoplay</a>
-	            <a href="javascript:stopSpeakAutoSpeech()">Stop</a>
-	            <a href="javascript:toggleVozmeSpeech()">Toggle VozMe Speech</a>
+	            <a class="speakJS" id="speakSpeech" href="#">Speak.js Speech (once)</a>
+	            <a class="speakJS" id="startSpeakAutoSpeech" href="#">Start Speak.js Autoplay</a>
+	            <a class="speakJS" id="stopSpeakAutoSpeech" href="#">Stop</a>
+	            <a id="toggleVozmeSpeech" href="#">Toggle VozMe Speech</a>
 			</div>
 		    
 		    <div>
-				<a href="javascript:addImagesForSelection();" class="tooltip"><img width="48px" height="48px" src="icons/picture.png" alt="Images"/><span>Images</span></a>
+				<a id="addImagesForSelection" href="#" class="tooltip"><img width="48px" height="48px" src="icons/picture.png" alt="Images"/><span>Images</span></a>
 			</div>
 
 		    <div>
 				<a href="#" class="tooltip"><img width="48px" height="48px" src="icons/colors.png" title="Theme"/><span>Theme</span></a>
 				<br/>
-	            <a href="javascript:setTheme('default-black')">White on Black</a>
-	            <a href="javascript:setTheme('default-white')">Black on White</a>
-	            <a href="javascript:setTheme('terminal-green')">Terminal Green</a>
-	            <a href="javascript:setTheme('earthspace')">Earth Space</a>
-	            <a href="javascript:setTheme('concrete')">Concrete</a>
-	            <a href="javascript:setTheme('chalkboard')">Chalkboard</a>
-	            <a href="javascript:setTheme('anonymous')">Anonymous</a>
+	            <a href="#" class="setTheme" theme='default-black'>White on Black</a>
+	            <a href="#" class="setTheme" theme='default-white'>Black on White</a>
+	            <a href="#" class="setTheme" theme='terminal-green'>Terminal Green</a>
+	            <a href="#" class="setTheme" theme='earthspace'>Earth Space</a>
+	            <a href="#" class="setTheme" theme='concrete'>Concrete</a>
+	            <a href="#" class="setTheme" theme='chalkboard'>Chalkboard</a>
+	            <a href="#" class="setTheme" theme='anonymous'>Anonymous</a>
 		    </div>
 		    <!--
 		    <li><a href="/support" class="tooltip"><img width="48px" height="48px" src="icons/earth.png" alt="Translate"/><span>Translate</span></a>
 		    -->
-		    <div><a href="javascript:toggleEdit();" class="tooltip"><img width="48px" height="48px" src="icons/edit.png" alt="Edit"/><span>Edit</span></a></div>
-		    <div><a href="javascript:shareIt();" class="tooltip"><img width="48px" height="48px" src="icons/share.png" alt="Share"/><span>Share</span></a></div>
+		    <div><a id="toggleEdit" class="tooltip"><img width="48px" height="48px" src="icons/edit.png" alt="Edit"/><span>Edit</span></a></div>
+		    <div><a id="shareIt" class="tooltip"><img width="48px" height="48px" src="icons/share.png" alt="Share"/><span>Share</span></a></div>
 		    <div>
 				<a href="#" class="tooltip"><img width="48px" height="48px" src="icons/question.png" alt="Help"/><span>Help</span></a>
 		        <br/>
-	            <a class="goto" html="about.html">What is Cortexit?</a>
-	            <a class="goto" html="help.html">How to Use Cortexit</a>
+	            <a href="#" class="goto" html="about.html">What is Cortexit?</a>
+	            <a href="#" class="goto" html="help.html">How to Use Cortexit</a>
 	            <!-- <a id="gotoBookmarklet" href='#'>Cortexit Bookmarklet</a> -->
-	            <a class="goto" html="privacy.html">Privacy Policy</a>
-	            <a class="goto" html="contact.html">Contact Us</a>
+	            <a href="#" class="goto" html="contact.html">Contact Us</a>
 		    </div>
 
 			<!--      
