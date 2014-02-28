@@ -26,22 +26,18 @@ Usage
 =====
 
 
-Chrome Extension
-----------------
+# Chrome Extension
 *   [Download](https://github.com/automenta/cortexitjs/releases) the .CRX file and drag it into the Chrome "Extensions" page
 *   Select some text and hit the cortexit button.  A Cortexit window will appear.
 *   For quick activation, set a keyboard shortcut (ex: Alt-C).  The Keyboard Shortcuts setting is at the bottom of the Extensions page.
 
 
-Web Version
------------
+# Web Version
 *   Visit http://[cortexit] to load the main page.  Here you can enter a URL or paste some text to cortexify.
 *   Visit http://[cortexit]#[URL] to load a specific URL
  
 
-Node.JS Setup
--------------
-
+## Node.JS Setup
 _Packaged installers will be available soon._  In the meantime, you will need _Node.JS_ to run it.
 
 *   Install: npm install
@@ -50,6 +46,5 @@ _Packaged installers will be available soon._  In the meantime, you will need _N
 This starts a webserver on port 8787 which you can visit at: http://localhost:8787
 
 
-PHP Setup
----------
+## PHP Setup
 Copy the web/ folder to a PHP-hosted web server. ( index.html accesses proxy.php )
