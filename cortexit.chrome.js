@@ -50,7 +50,7 @@ chrome.extension.onRequest.addListener(
 
 chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.executeScript(null, {
-	  code: 'chrome.extension.sendRequest({selection: window.getSelection().toString() });'
+		file: 'cortexit.chrome.inject.js'
   });
 });
 

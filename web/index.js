@@ -121,51 +121,52 @@ function goPreviousExplicit() {
 function autosize() {
 	var pw = $('#_Panel').width();
 	var ph = $('#_Panel').height();
-	var heightTolerancePX = 0.1 * ph;
+	var heightTolerancePX = parseInt(0.12 * ph);
 	var maxIterations = 20;
 	var fontChange = 10;
 	var lastDirection = 0;
 	var finished = false;
 
 	function trynext() {
-		var cw = $('#_Content').width();
-		var th = $('#Top').height();
-		var ch = $('#_Content').height();
-		var bh = $('#_Bottom').height();
+			var bc = $('#_Content')[0].getBoundingClientRect(); 
+			var cw = bc.right;
+			var ch = bc.bottom;
+			var th = $('#Top').height();
+			var bh = $('#_Bottom').height();
 
-		var pY = ph - th - bh - heightTolerancePX;
+			var pY = ph - th - bh - heightTolerancePX;
 
-		if ((fontChange == 0) || (finished)) {
-			clearInterval(autosizing);
-			finished = true;
-			return;
-		}
+			if ((fontChange == 0) || (finished)) {
+				clearInterval(autosizing);
+				finished = true;
+				return;
+			}
 
-		if ((ch > pY) || (cw > pw)) {
-			fontSize -= fontChange;
-			updateFonts();
+			if ((ch > pY) || (cw > pw)) {
+				fontSize -= fontChange;
+				updateFonts();
 
-			if (lastDirection == 1)
-				fontChange--;
+				if (lastDirection == 1)
+					fontChange--;
 
-			lastDirection = -1;
-		}			
-		else if (ch < pY) {
-			fontSize += fontChange;
-			updateFonts();
+				lastDirection = -1;
+			}			
+			else if (ch < pY) {
+				fontSize += fontChange;
+				updateFonts();
 
-			if (lastDirection == -1)
-				fontChange--;
+				if (lastDirection == -1)
+					fontChange--;
 
-			lastDirection = 1;
-		}
-		else {
-			clearInterval(autosizing);
-			finished = true;
-		}
+				lastDirection = 1;
+			}
+			else {
+				clearInterval(autosizing);
+				finished = true;
+			}
 
-		if (maxIterations-- == 0)
-			clearInterval(autosizing);
+			if (maxIterations-- == 0)
+				clearInterval(autosizing);
 	}
 
 	clearInterval(autosizing);
@@ -174,14 +175,15 @@ function autosize() {
 	trynext();
 }
 
+var prevFade = null;
 function showFrame(f) {
-    
+	clearInterval(autosizing);
+
     disableVozmeSpeech();
 
 	$('#_Content').hide();
 
-    var content = document.getElementById("_Content");
-    
+    var content = document.getElementById("_Content");    
 
     var line = cframes[f];
 	line = line.replace(/{{/g, "<");
@@ -235,12 +237,26 @@ function showFrame(f) {
 			a.attr('href', '#' + currentPage + '/' + target);
 		}
 	});
-    
+
+	/*if (prevFade) {
+		prevFade.resolve();
+		prevFade = null;
+	}
+	   
+	$('#_Content').hide().fadeIn({
+		duration:"slow",
+		start: function(p) {
+			prevFade = p;			
+		},
+		done: function(p) {
+			prevFade = null;
+		} 
+	});*/
+	$('#_Content').show();
+
 	if ($('#_Font input').is(':checked')) {
 		autosize();
 	}
-
-	$('#_Content').fadeIn("slow");
 
 }
 
