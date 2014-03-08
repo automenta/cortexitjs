@@ -151,12 +151,13 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
 	opacity: 0.7;
 }
 .CortexitMiniButton {
-	height: 1em;
+	height: 1em !important;
+	cursor: crosshair;
 }
 .CortexitMegaButton {
 	position: fixed;
 	height: 5em;
 	bottom: 0.25em;
 	right: 0.25em;
-	pointer: crosshair;
+	cursor: crosshair;
 }

@@ -132,10 +132,12 @@ function newCortexitHTML(onClose) {
 }
 
 
+//TODO rename to hideCortexitPopup
 function hideCortexit() {
 	$('#CortexitPopup').remove();
 }
 
+//TODO rename to showCortexitPopup
 function showCortexit(htmlContent) {
 	if ($('#CortexitPopup').length > 0)
 		hideCortexit();
@@ -158,18 +160,21 @@ function cortexify() {
 	window.CORTEXIT_PATH = scriptURL.substring(0, scriptURL.length - "cortexit.js".length);
 
 	function newCortexitButton(getHTML) {
-		var b = $('<img class="CortexitMiniButton" src="' + window.CORTEXIT_PATH + 'icons/cortexit.png"/>');
+		var b = $('<img title="Cortexify" class="CortexitMiniButton" src="' + window.CORTEXIT_PATH + 'icons/cortexit.png"/>');
 		b.click(function() {
-			showCortexit(getHTML());
+			if (typeof getHTML == "function")
+				showCortexit(getHTML());
+			else
+				showCortexit(getHTML.html());
 		});
 		return b;
 	}
 
+	$('.cortexit_button_before').each(function() {
+		$(this).prepend('<br/>').prepend(newCortexitButton($(this)));
+	});
 	$('.cortexit_button_after').each(function() {
-		var e = $(this);
-		e.append(newCortexitButton(function() {
-			return e.html();
-		}));
+		$(this).append('<br/>').append(newCortexitButton($(this)));
 	});
 
 	var cortexifySelectionButton = $('<img class="CortexitMegaButton" src="' + window.CORTEXIT_PATH + 'icons/cortexit.png"/>');
