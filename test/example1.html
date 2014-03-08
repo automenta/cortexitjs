@@ -2,7 +2,6 @@
 <head>
 	<title>Cortexit: Javascript Example</title>
 	<script src="../web/lib/jquery/jquery.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="../web/cortexit.css" />
 	<style>
 		body {
 			margin: 5%;
@@ -12,12 +11,12 @@
 <body>
 
 <div style="opacity: 0.5">
-<h2>Cortexit Javascript Example</h2>
-INSTRUCTIONS:
-<ul>
-	<li>Click the 'C' button after each paragraph to open a Cortexit popup of that paragraph's contents.</li>
-	<li>Select some text to activate the Cortexify button (lower right corner of page). </li>
-</ul>
+	<h2>Cortexit Javascript Example</h2>
+	INSTRUCTIONS:
+	<ul>
+		<li>Click the 'C' button after each paragraph to open a Cortexit popup of that paragraph's contents.</li>
+		<li>Select some text to activate the Cortexify button (appears in lower right corner of page). </li>
+	</ul>
 </div>
 
 <hr/>
@@ -65,11 +64,11 @@ which neither A nor ¬A is provable, as follows:
 </body>
 
 <script>
-	window.CORTEXIT_PATH = '../web/';
 	$(document).ready(function() {
 		cortexify();
 	});
 </script>
+
 <script src="../web/cortexit.js"></script>
 
 </html>

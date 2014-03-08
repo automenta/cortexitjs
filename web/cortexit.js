@@ -3,7 +3,6 @@
 function newCortexitHTML(onClose) {
 	var c = $('<div/>');
 	c.append('<link id="themeCSS" rel="stylesheet" type="text/css"  />');
-
 	c.append(
 		'<div id="_Panel">' + 
 		    '<div id="_Content" contentEditable="false">' +
@@ -153,9 +152,13 @@ function showCortexit(htmlContent) {
 
 	initCortexit();
 	loadText(htmlContent);
+
 }
 
 function cortexify() {
+	var scriptURL = $("script[src$='cortexit.js']").attr('src');
+	window.CORTEXIT_PATH = scriptURL.substring(0, scriptURL.length - "cortexit.js".length);
+
 	function newCortexitButton(getHTML) {
 		var b = $('<img class="CortexitMiniButton" src="' + window.CORTEXIT_PATH + 'icons/cortexit.png"/>');
 		b.click(function() {
@@ -170,12 +173,34 @@ function cortexify() {
 			return e.html();
 		}));
 	});
+
+	var cortexifySelectionButton = $('<img class="CortexitMegaButton" src="' + window.CORTEXIT_PATH + 'icons/cortexit.png"/>');
+	cortexifySelectionButton.click(function() {
+		showCortexit(getSelectionHtml());
+	});
+	cortexifySelectionButton.hide();
+	$('body').append(cortexifySelectionButton);
+	$('body').append('<link rel="stylesheet" type="text/css" href="' + window.CORTEXIT_PATH + 'cortexit.css" />');
+
+	var updateSelectionButton = function() {
+		setTimeout(function() {
+			var s = window.getSelection().toString();
+			if (s.length > 0) {
+				cortexifySelectionButton.fadeIn();
+			}
+			else {
+				cortexifySelectionButton.fadeOut();
+			}
+		},0);
+	};
+	$(document).mouseup(updateSelectionButton);
+	$(document).mousedown(updateSelectionButton);
 }
 
 
 if (!window.CORTEXIT_PATH) window.CORTEXIT_PATH = '';
 
-var sentencizer = new Worker(window.CORTEXIT_PATH + 'sentencize.js');
+var sentencizer;
 
 var defaultTheme = 'default-black';
 
@@ -306,9 +331,9 @@ function autosize() {
 
 	function trynext() {
 			var bc = $('#_Content')[0].getBoundingClientRect(); 
-			var cw = bc.right;
-			var ch = bc.bottom;
-			var th = $('#Top').height();
+			var cw = bc.width;
+			var ch = bc.height;
+			var th = $('#Top').height() || 0;
 			var bh = $('#_Bottom').height();
 
 			var pY = ph - th - bh - heightTolerancePX;
@@ -640,6 +665,9 @@ function loadText(s) {
 	$('#Browser').hide();
     $('#_Content').html('<div id="Loading"><center>Processing...</center></div>');
 
+	if (!sentencizer)
+		sentencizer = new Worker(window.CORTEXIT_PATH + 'sentencize.js');
+
 	sentencizer.addEventListener('message', function(e) {
 
 		   var linesPreFilter = e.data;
@@ -696,6 +724,21 @@ function loadURL(u) {
 		loadText(s);
 	});
 }
+
+
+function getSelectionHtml() {
+    var html = "";
+    var sel = window.getSelection();
+    if (sel.rangeCount) {
+        var container = document.createElement("div");
+        for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+            container.appendChild(sel.getRangeAt(i).cloneContents());
+        }
+        html = container.innerHTML;
+    }
+    return html;
+}
+
 
 function bookmarklet() {
 	var currentPage = window.location;
