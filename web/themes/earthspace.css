@@ -16,6 +16,9 @@
     color: #E2A848;
     font-family: monospace;
     background-color: rgba(0,0,0,0.55);    
+   background: url('image/earth.jpg') no-repeat;
+   background-size: cover;
+   background-color: transparent;
 }
 
 #_Panel a {
@@ -24,13 +27,8 @@
     font-weight: bold;
 }
 
-body {
-   background: url('image/earth.jpg') no-repeat;
-   background-size: cover;
-   background-color: transparent;
-}
 
-Status {
+#Status {
     color: white;
 }
 

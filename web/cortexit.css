@@ -11,7 +11,6 @@ body {
 }
 
 #_Panel {
-    position: fixed;
     text-align:left;
     font-family:Arial,Sans;
     color: white;
@@ -138,4 +137,23 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
 #BrowserIFrame, #BrowserWebview {
 	width: 100%;
 	height: 100%;
+}
+
+#CortexitPopup {
+	z-index: 9999;
+	position: fixed;
+	height: 80%;
+	width: 80%;
+	left: 10%;
+	top: 10%;
+}
+#PanelClose {
+	position: absolute;
+	right: 0.25em;
+	top: 0.25em;
+	font-size: 200%;
+	opacity: 0.7;
+}
+.CortexitMiniButton {
+	height: 1em;
 }

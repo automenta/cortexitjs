@@ -1,17 +1,13 @@
-body {
-    background: white;
-}
-
 #_Panel {
     color: black;
     background: white;
 }
 
-a {
+#_Panel a {
     color: #222;
 }
 
-#Status, #_Font { color: black; }
+#Menu a, #Status, #_Font { color: black; }
 
 
 .ContentHighlighted {

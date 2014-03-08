@@ -6,6 +6,9 @@
     color: #E2A848;
     font-family: 'Anonymous Pro', sans-serif;
     background-color: rgba(0,0,0,0.55);    
+   background: url('image/anonymous-mask.jpg') no-repeat;
+   background-size: cover;
+   background-color: transparent;
 }
 
 #_Panel a {
@@ -13,13 +16,7 @@
     font-weight: bold;
 }
 
-body {
-   background: url('image/anonymous-mask.jpg') no-repeat;
-   background-size: cover;
-   background-color: transparent;
-}
-
-Status {
+#Status {
     color: white;
 }
 

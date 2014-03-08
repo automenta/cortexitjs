@@ -1,0 +1,75 @@
+<html>
+<head>
+	<title>Cortexit: Javascript Example</title>
+	<script src="../web/lib/jquery/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../web/cortexit.css" />
+	<style>
+		body {
+			margin: 5%;
+		}
+	</style>
+</head>
+<body>
+
+<div style="opacity: 0.5">
+<h2>Cortexit Javascript Example</h2>
+INSTRUCTIONS:
+<ul>
+	<li>Click the 'C' button after each paragraph to open a Cortexit popup of that paragraph's contents.</li>
+	<li>Select some text to activate the Cortexify button (lower right corner of page). </li>
+</ul>
+</div>
+
+<hr/>
+
+<h1>On formally undecidable propositions of Principia Mathematica and Related systems.</h1>
+<h2>Kurt Godel 1931.</h2>
+
+<p class="cortexit_button_after">
+The development of mathematics towards greater exactness has, as is well-known, lead
+to formalization of large areas of it such that you can carry out proofs by following a few
+mechanical rules. The most comprehensive current formal systems are the system of
+Principia Mathematica (PM) on the one hand, the Zermelo-Fraenkelian axiom-system
+of set theory on the other hand. These two systems are so far developed that you
+can formalize in them all proof methods that are currently in use in mathematics, i.e.
+you can reduce these proof methods to a few axioms and deduction rules. Therefore,
+the conclusion seems plausible that these deduction rules are sufficient to decide all
+mathematical questions expressible in those systems. We will show that this is not true,
+but that there are even relatively easy problem in the theory of ordinary whole numbers
+that can not be decided from the axioms. This is not due to the nature of these systems,
+but it is true for a very wide class of formal systems, which in particular includes all
+those that you get by adding a finite number of axioms to the above mentioned systems,
+provided the additional axioms don’t make false theorems provable.
+</p>
+
+<p class="cortexit_button_after">
+Let us first sketch the main intuition for the proof, without going into detail and
+of course without claiming to be exact. The formulae of a formal system (we will
+restrict ourselves to the PM here) can be viewed syntactically as finite sequences of
+the basic symbols (variables, logical constants, and parentheses or separators), and it is
+easy to define precisely which sequences of the basic symbols are syntactically correct
+formulae and which are not. Similarly, proofs are formally nothing else than finite
+sequences of formulae (with specific definable properties). Of course, it is irrelevant
+for meta-mathematical observations what signs are taken for basic symbols, and so we
+will chose natural numbers for them. Hence, a formula is a finite sequence of natural
+numbers, and a proof schema is a finite sequence of finite sequences of natural numbers.
+The meta-mathematical concepts (theorems) hereby become concepts (theorems) about
+natural numbers, which makes them (at least partially) expressible in the symbols of the
+system PM. In particular, one can show that the concepts “formula”, “proof schema”,
+“provable formula” are all expressible within the system PM, i.e. one can, for example,
+2come up with a formula F (v) of PM that has one free variable v (whose type is sequence
+of numbers) such that the semantic interpretation of F (v) is: v is a provable formula.
+We will now construct an undecidable theorem of the system PM, i.e. a theorem A for
+which neither A nor ¬A is provable, as follows:
+</p>
+</body>
+
+<script>
+	window.CORTEXIT_PATH = '../web/';
+	$(document).ready(function() {
+		cortexify();
+	});
+</script>
+<script src="../web/cortexit.js"></script>
+
+</html>

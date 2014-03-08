@@ -18,6 +18,8 @@
     font-family: 'Gochi Hand', cursive;
     background-color: transparent;
     opacity: 0.9;
+   	background: url('image/concrete.jpg') no-repeat;
+   	background-size: cover;
 }
 
 #_Panel a {
@@ -25,12 +27,8 @@
     font-family: 'Gochi Hand', cursive;
 }
 
-body {
-   background: url('image/concrete.jpg') no-repeat;
-   background-size: cover;
-}
 
-Status {
+#Status {
     color: white;
 }
 

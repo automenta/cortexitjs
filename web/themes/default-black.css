@@ -2,7 +2,7 @@
     color: #ddd;
     background-color: black;
 }
-a {
+#_Panel a {
     color: #fff;
 }
 
@@ -10,10 +10,6 @@ a {
     background-color: #444;
 }
 
-
-body {
-   background-color: #333;
-}
 
 
 #Status {
