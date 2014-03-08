@@ -1,7 +1,7 @@
 
 
 function newCortexitHTML(onClose) {
-	var c = $('<div/>');
+	var c = $('<div id="CortexitPopup"/>');
 	c.append('<link id="themeCSS" rel="stylesheet" type="text/css"  />');
 	c.append(
 		'<div id="_Panel">' + 
@@ -140,14 +140,12 @@ function showCortexit(htmlContent) {
 	if ($('#CortexitPopup').length > 0)
 		hideCortexit();
 
-	var popup = $('<div id="CortexitPopup"/>');
-	$('body').append(popup);
-
 	var onClose = function() {
 		hideCortexit();
 	};
+
+	$('body').append(newCortexitHTML(onClose));
 	
-	popup.append(newCortexitHTML(onClose));
 	$('#Menu').toggle();
 
 	initCortexit();
