@@ -339,7 +339,10 @@ function autosize() {
 			var th = $('#Top').height() || 0;
 			var bh = $('#_Bottom').height();
 
+
 			var pY = ph - th - bh - heightTolerancePX;
+
+			//console.log(cw, ch, bh, pw, ph, pY);
 
 			if ((fontChange == 0) || (finished)) {
 				clearInterval(autosizing);
@@ -347,7 +350,7 @@ function autosize() {
 				return;
 			}
 
-			if ((ch > pY) || (cw > pw)) {
+			if (ch > pY) /*|| (cw > pw))*/ {
 				fontSize -= fontChange;
 				updateFonts();
 

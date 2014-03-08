@@ -2,9 +2,10 @@
     color: #ddd;
     background-color: black;
 }
-#_Panel a {
+#_Panel a, #_Panel a:visited  {
     color: #fff;
 }
+#Menu a, #Menu a:visited, #Status, #_Font { color: white; }
 
 .ContentHighlighted {
     background-color: #444;
@@ -29,3 +30,8 @@
 #_FontHover {
     background-color: white;
 }
+
+#CortexitPopup {
+	border: 1px solid white;
+}
+

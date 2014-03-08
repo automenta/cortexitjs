@@ -47,10 +47,6 @@ root {
 }
 
 
-a, a.visited {
-    font-family: Arial, Sans;
-}
-
 #Return {
     position:absolute;
     top:0;
@@ -111,14 +107,10 @@ a, a.visited {
 
 
 
-a {
-    color: white;
-}
 
-
-a:hover {text-decoration:none;} /*BG color is a must for IE6*/
-a.tooltip span { pointer-events: none; display:none; padding:2px 3px; margin-left:-140px; margin-top: 0px; width:140px; z-index: 400;}
-a.tooltip:hover span{display:inline; position:absolute; color:#fff;}
+#Menu a:hover {text-decoration:none;} /*BG color is a must for IE6*/
+#Menu a.tooltip span { pointer-events: none; display:none; padding:2px 3px; margin-left:-140px; margin-top: 0px; width:140px; z-index: 400;}
+#Menu a.tooltip:hover span{display:inline; position:absolute; color:#fff;}
 
 /* a.tooltipAbove span {display:none; margin-left:-200px;  margin-bottom: 60px; width:300px; font-size: 14px; }
 a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
@@ -136,6 +128,7 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
 }
 
 #CortexitPopup {
+    font-family:Arial,Sans;
 	z-index: 9999;
 	position: fixed;
 	height: 80%;
@@ -148,7 +141,7 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
 	right: 0.5em;
 	top: 0.25em;
 	font-size: 200%;
-	opacity: 0.7;
+	color: gray;
 }
 .CortexitMiniButton {
 	height: 1em !important;

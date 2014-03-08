@@ -3,9 +3,10 @@
     background: white;
 }
 
-#_Panel a {
+#_Panel a, #_Panel a:visited, #Menu a, #Menu a:visited  {
     color: #222;
 }
+
 
 #Menu a, #Status, #_Font { color: black; }
 
@@ -15,4 +16,8 @@
 }
 #_Bottom {
     background-color: rgba(255,255,255,0.75);
+}
+
+#CortexitPopup {
+	border: 1px solid black;
 }
