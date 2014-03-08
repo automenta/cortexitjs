@@ -32,7 +32,22 @@ Usage
 *   For quick activation, set a keyboard shortcut (ex: Alt-C).  The Keyboard Shortcuts setting is at the bottom of the Extensions page.
 
 
-# Web Version
+# HTML5/Javascript Version
+Place the following snippet on any webpage.  The script path points to the folder where Cortexit is installed.
+```html
+<script>
+	$(document).ready(function() {
+		cortexify();
+	});
+</script>
+<script src="cortexit/cortexit.js"></script>
+```
+By default, mouse text selection will trigger a Cortexify button. The following CSS classes add contextual Cortexit controls:
+* cortexit_button_after - add a mini Cortexify button after an element
+* (more coming soon)
+
+
+# Web Server Version
 *   Visit http://[cortexit] to load the main page.  Here you can enter a URL or paste some text to cortexify.
 *   Visit http://[cortexit]#[URL] to load a specific URL
  
