@@ -41,11 +41,25 @@ chrome.extension.onRequest.addListener(
 
 		var p = "height="+h+",width=" + w + ",top=" + oy + ",left=" + ox;
 
-	    var win = window.open("web/index.html#chrome", "_blank", p);
+		chrome.storage.sync.get(null, function(opt) { 
+			var win = window.open("web/index.html#chrome", "_blank", p);
 
-		win.addEventListener('load', function() {
-			win.document.getElementById('SelectedText').innerHTML = s;
-		}, false);
+			if (!opt) opt = {};
+
+			win.addEventListener('load', function() {
+				win.document.getElementById('SelectedText').innerHTML = s;
+				win.document.getElementById('ChromeOptions').innerHTML = JSON.stringify( opt );
+			}, false);
+			win.addEventListener('unload', function() {
+				var x = win.document.getElementById('ChromeOptions').innerHTML;
+				if (x.length > 0) {
+					var p = JSON.parse(x);
+					chrome.storage.sync.set(p);
+				}
+			}, false);
+
+		});
+
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {

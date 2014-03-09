@@ -111,6 +111,7 @@ function newCortexitHTML(onClose) {
 	d += "    <span id=\"_Speech\"><\/span>";
 	d += "    <div id=\"audio\" style=\"display:none\"><\/div>";
 	d += "    <div id=\"SelectedText\" style=\"display:none\"><\/div>";
+	d += "    <div id=\"ChromeOptions\" style=\"display:none\"><\/div>";
 	d += "	<!-- ";
 	d += "    <div id=\"share-modal\" title=\"Share...\">";
 	d += "        <div id=\"attbtext\"><\/div>";
@@ -228,7 +229,7 @@ var editing = false;
 var autosizing;
 
 var chrome = false; //whether running in a chrome extension or not
-
+var chromeStorage = { };
 
 function settings(key, value) {
 	if (value == undefined) {
@@ -236,7 +237,8 @@ function settings(key, value) {
 		if (chrome) {
 			//return chrome.storage.sync.get(key);
 			//TODO message passing
-			return undefined;
+			chromeStorage = JSON.parse( $('#ChromeOptions').html() || "{}");
+			return chromeStorage[key];
 		}
 		else {
 			return localStorage[key];
@@ -245,10 +247,8 @@ function settings(key, value) {
 	else {
 		//set
 		if (chrome) {
-			/*var p = { };
-			p[key] = value;
-			chrome.storage.sync.set(p);	*/
-			//TODO message passing
+			chromeStorage[key] = value;
+			$('#ChromeOptions').html( JSON.stringify( chromeStorage ));
 		}
 		else {
 			localStorage[key] = value;
@@ -944,14 +944,6 @@ function shareIt() {
 function initCortexit() {
 
 	//setup theme
-	var currentTheme;
-	if (!chrome)
-		currentTheme = settings('theme');
-
-	if (currentTheme == null) {
-		currentTheme = defaultTheme;
-	}
-	setTheme(currentTheme);
 
     var panel = document.getElementById("_Panel");
     var control = document.getElementById("_Control");
@@ -1050,15 +1042,36 @@ function initCortexit() {
 
     $('#_Speech').fadeToggle();    
 
+	function loadSettings() {
 
+		var currentTheme = settings('theme');
+		if (currentTheme == null) {
+			currentTheme = defaultTheme;
+		}
+		setTheme(currentTheme);
 
-	var initialAutoSize = false;
+		var initialAutoSize = false;
+	
+		initialAutoSize = settings('autosize');
+		if (initialAutoSize == 'false')
+			$('#_Font input').prop('checked', false);
+		else
+			$('#_Font input').prop('checked', true);
+	}
 
-	initialAutoSize = settings('autosize');
-	if (initialAutoSize == 'false')
-		$('#_Font input').prop('checked', false);
-	else
-		$('#_Font input').prop('checked', true);
+	if (chrome) {
+		//wait for ChromeOptions to be set by the extension code in cortexit.chrome.js
+		var ssi = setInterval(function() {
+			var x = $('#ChromeOptions').html();
+			if (x.length > 0) {
+				clearInterval(ssi);
+				loadSettings();
+			}
+		}, 50);		
+	}
+	else {
+		loadSettings();
+	}
 
 }
 
