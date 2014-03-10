@@ -45,7 +45,7 @@ function newCortexitHTML(c, onClose) {
 	d += "		<div id=\"Menu\">";
 	d += "";
 	d += "			<div>		        ";
-	d += "			    <a class=\"tooltip goto\" html=\"about.html\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/link.png\" alt=\"Go...\"\/><span>Go...<\/span><\/a>";
+	d += "			    <a class=\"tooltip goto\" html=\"" + window.CORTEXIT_PATH + "about.html\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/link.png\" alt=\"Go...\"\/><span>Go...<\/span><\/a>";
 	d += "			<\/div>";
 	d += "";
 	d += "		    <!--";
