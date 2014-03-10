@@ -1,4 +1,7 @@
 $(document).ready(function(){
+
+	newCortexitHTML($('body'));
+
 	if (window.location.hash == '#chrome') {
 		chrome = true;
 		$('#Top').hide();

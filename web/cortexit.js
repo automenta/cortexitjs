@@ -1,7 +1,9 @@
 
 
-function newCortexitHTML(onClose) {
-	var c = $('<div id="CortexitPopup"/>');
+function newCortexitHTML(c, onClose) {
+	if (!c)
+		c = $('<div id="CortexitPopup"/>');
+
 	c.append('<link id="themeCSS" rel="stylesheet" type="text/css"  />');
 	c.append(
 		'<div id="_Panel">' + 
@@ -147,7 +149,7 @@ function showCortexit(htmlContent) {
 		hideCortexit();
 	};
 
-	$('body').append(newCortexitHTML(onClose));
+	$('body').append(newCortexitHTML(null, onClose));
 	
 	$('#Menu').toggle();
 
@@ -637,7 +639,7 @@ function loadHTML(url, whenFinished) {
 
 			goinput.keypress(function(e) {
 				if(e.which == 13) {
-					gobutton.click();
+					loadbutton.click();
 				}
 			});
 
