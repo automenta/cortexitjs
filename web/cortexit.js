@@ -63,12 +63,12 @@ function newCortexitHTML(c, onClose) {
 	d += "		    <\/li>";
 	d += "		    -->";
 	d += "			<div>";
-	d += "			    <a href=\"#\" class=\"tooltip\"><img id=\"speaker_icon\" width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/speak.png\" alt=\"Speak\"\/><span>Speech<\/span><\/a>";
-	d += "				<br\/>";
-	d += "	            <a class=\"speakJS\" id=\"speakSpeech\" href=\"#\">Speak.js Speech (once)<\/a>";
-	d += "	            <a class=\"speakJS\" id=\"startSpeakAutoSpeech\" href=\"#\">Start Speak.js Autoplay<\/a>";
-	d += "	            <a class=\"speakJS\" id=\"stopSpeakAutoSpeech\" href=\"#\">Stop<\/a>";
-	d += "	            <a id=\"toggleVozmeSpeech\" href=\"#\">Toggle VozMe Speech<\/a>";
+	d += "			    <a id='toggleSpeakerMenu' href=\"#\" class=\"tooltip\"><img id=\"speaker_icon\" width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/speak.png\" alt=\"Speak\"\/><span>Speech<\/span><\/a>";
+	d += "				<br\/><span id=\"speechMenu\" style='display:none'>";
+	d += "	            <button class=\"speakJS\" id=\"speakSpeech\">Speak.js Speech (once)<\/button>";
+	d += "	            <button class=\"speakJS\" id=\"startSpeakAutoSpeech\">Start Speak.js Autoplay<\/button>";
+	d += "	            <button class=\"speakJS\" id=\"stopSpeakAutoSpeech\">Stop<\/button>";
+	d += "	            <button id=\"toggleVozmeSpeech\">Toggle VozMe Speech<\/button></span>";
 	d += "			<\/div>";
 	d += "		    ";
 	d += "		    <div>";
@@ -76,15 +76,15 @@ function newCortexitHTML(c, onClose) {
 	d += "			<\/div>";
 	d += "";
 	d += "		    <div>";
-	d += "				<a href=\"#\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/colors.png\" title=\"Theme\"\/><span>Theme<\/span><\/a>";
-	d += "				<br\/>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='default-black'>White on Black<\/a>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='default-white'>Black on White<\/a>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='terminal-green'>Terminal Green<\/a>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='earthspace'>Earth Space<\/a>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='concrete'>Concrete<\/a>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='chalkboard'>Chalkboard<\/a>";
-	d += "	            <a href=\"#\" class=\"setTheme\" theme='anonymous'>Anonymous<\/a>";
+	d += "				<a id='toggleThemeMenu' href=\"#\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/colors.png\" title=\"Theme\"\/><span>Theme<\/span><\/a>";
+	d += "				<br\/><span id=\"themeMenu\" style='display:none'>";
+	d += "	            <button class=\"setTheme\" theme='default-black'>White on Black<\/button>";
+	d += "	            <button class=\"setTheme\" theme='default-white'>Black on White<\/button>";
+	d += "	            <button class=\"setTheme\" theme='terminal-green'>Terminal Green<\/button>";
+	d += "	            <button class=\"setTheme\" theme='earthspace'>Earth Space<\/button>";
+	d += "	            <button class=\"setTheme\" theme='concrete'>Concrete<\/button>";
+	d += "	            <button class=\"setTheme\" theme='chalkboard'>Chalkboard<\/button>";
+	d += "	            <button class=\"setTheme\" theme='anonymous'>Anonymous<\/button></span>";
 	d += "		    <\/div>";
 	d += "		    <!--";
 	d += "		    <li><a href=\"\/support\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/earth.png\" alt=\"Translate\"\/><span>Translate<\/span><\/a>";
@@ -92,12 +92,8 @@ function newCortexitHTML(c, onClose) {
 	d += "		    <div><a id=\"toggleEdit\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/edit.png\" alt=\"Edit\"\/><span>Edit<\/span><\/a><\/div>";
 	d += "		    <div><a id=\"shareIt\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/share.png\" alt=\"Share\"\/><span>Share<\/span><\/a><\/div>";
 	d += "		    <div>";
-	d += "				<a href=\"#\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/question.png\" alt=\"Help\"\/><span>Help<\/span><\/a>";
-	d += "		        <br\/>";
-	d += "	            <a href=\"#\" class=\"goto\" html=\"about.html\">What is Cortexit?<\/a>";
-	d += "	            <a href=\"#\" class=\"goto\" html=\"help.html\">How to Use Cortexit<\/a>";
-	d += "	            <!-- <a id=\"gotoBookmarklet\" href='#'>Cortexit Bookmarklet<\/a> -->";
-	d += "	            <a href=\"#\" class=\"goto\" html=\"contact.html\">Contact Us<\/a>";
+	d += "				<a href=\"#\"  class=\"tooltip goto\" html=\"" + window.CORTEXIT_PATH + "help.html\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/question.png\" alt=\"Help\"\/><span>Help<\/span><\/a>";
+	//d += "	            <!-- <a id=\"gotoBookmarklet\" href='#'>Cortexit Bookmarklet<\/a> -->";
 	d += "		    <\/div>";
 	d += "";
 	d += "			<!--      ";
@@ -226,7 +222,6 @@ var currentPage = '';
 
 var stopAutospeech = false;
 
-var qI = 0;
 var editing = false;
 var autosizing;
 
@@ -784,16 +779,23 @@ function addImagesForSelection() {
 //        images.innerHTML += '<div class="imageSectionTitle" style="clear: both;">Image results for: ' + selection + '</div><br/>';
 //        images.innerHTML += '<div class="imageSection"><iframe src=\"' + iurl + '\" width="100%" height="400px"></iframe></div>';
 
-    //cframes[currentFrame] += '<div id="x' + qI + '" class="ui-widget-content">';
-    cframes[currentFrame] += '<br/><br/><div style="clear: both;">Image results for: ' + selection + '</div><br/>';
-    cframes[currentFrame] += '<div class="imageSection"><iframe src=\"' + iurl + '\" width="100%" height="400px"></iframe></div>';
-    //cframes[currentFrame] += '<script>var newFrame = $(\'#x\' +' + qI + '); newFrame.resizable(); newFrame.draggable();';
-    //cframes[currentFrame] += '</div>';
+    ////cframes[currentFrame] += '<div id="x' + qI + '" class="ui-widget-content">';
+    //cframes[currentFrame] += '<br/><br/><div style="clear: both;">Image results for: ' + selection + '</div><br/>';
+    //cframes[currentFrame] += '<div class="imageSection"><iframe src=\"' + iurl + '\" width="100%" height="400px"></iframe></div>';
+    ////cframes[currentFrame] += '<script>var newFrame = $(\'#x\' +' + qI + '); newFrame.resizable(); newFrame.draggable();';
+    ////cframes[currentFrame] += '</div>';
 
+	var scale = 0.6;
+	var w = parseInt(screen.width * scale);
+	var h = parseInt(screen.height * scale);
+	var ox = parseInt( (screen.width * (1.0 - scale))/2.0 );
+	var oy = parseInt( (screen.height * (1.0 - scale))/2.0 );
 
-    showFrame(currentFrame);
-    
-    qI++;
+	var p = "height="+h+",width=" + w + ",top=" + oy + ",left=" + ox;
+
+	var win = window.open(iurl, "_blank", p);
+
+    //showFrame(currentFrame);
 
 }
 
@@ -982,6 +984,13 @@ function initCortexit() {
 	$('#shareIt').click(function() { shareIt(); });
 	$("#_Next").click(goNext);
 	$("#_Prev").click(goPrevious);
+
+	$('#toggleSpeakerMenu').click(function() {
+		$('#speechMenu').toggle();
+	});
+	$('#toggleThemeMenu').click(function() {
+		$('#themeMenu').toggle();
+	});
 
 	$('.setTheme').click(function() {
 		setTheme($(this).attr('theme'));
