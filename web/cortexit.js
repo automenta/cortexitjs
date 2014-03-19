@@ -830,6 +830,9 @@ document.onkeydown = function(e){
         else if (keycode == 40) { //down                
             fontSmaller();
         }
+		else if (keycode == 27) {	//escape
+			$('#_Bottom').toggle();
+		}
     }
 };
 

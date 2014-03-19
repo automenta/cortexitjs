@@ -4,3 +4,7 @@ cortexit.ini
 /lib/CopyLibs/
 /dist/
 /node_modules/
+build/
+cortexit_chrome.crx
+cortexit_chrome.pem
+
