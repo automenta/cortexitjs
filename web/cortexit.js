@@ -19,9 +19,12 @@ function newCortexitHTML(c, onClose) {
 	d += "        <div id=\"_Prev\">";
 	d += "			&nbsp;";
 	d += "        <\/div>";
-	d += "        <div id=\"Status\">";
-	d += "			&nbsp;";
-	d += "        <\/div>";
+	d += "        <div>";
+		d += "        <div><input id='SpeedReadCheck' type='checkbox' title='Speed-Read'/>&nbsp;</div>";
+		d += "        <div id=\"Status\">";
+		d += "			&nbsp;";
+		d += "        <\/div>";
+	d += "        </div>";
 	d += "        <div id=\"_Next\">";
 	d += "			&nbsp;";
 	d += "        <\/div>";
@@ -216,7 +219,7 @@ var pageurl = 'http://cortexit.org';
 var fontSize = 60;
 var text;
 var cframes = [];
-var currentFrame;
+var currentFrame = 0;
 var speechEnabled = false;
 var currentPage = '';
 
@@ -320,6 +323,95 @@ function goPreviousExplicit() {
     goPrevious();
 }
 
+var srinterval = null;
+var srwords = null;
+var srword = 0;
+
+var striphtmlregex = /(<([^>]+)>)/ig;
+
+function getWordArray(text) {
+	text = text.replace(/{{/g, "<");
+	text = text.replace(/}}/g, ">");
+	text = text.replace(striphtmlregex, '');
+
+	var y = text.split(' ');
+	var z = [];
+	for (var i = 0; i < y.length; i++) {
+		y[i] = y[i].trim();
+		if (y[i].length > 0)
+			z.push(y[i]);
+	}
+	return z;
+}
+
+function setSpeedRead(speedread) {
+	var status = $('#Status');
+
+	function nextWord() {
+		if (!srwords) {
+			srwords = getWordArray(cframes[currentFrame]);
+			srword = 0;
+		}
+		else if (srword >= srwords.length-1) {
+			if (cframes.length == currentFrame) {
+				//finished
+				setSpeed(0);
+			}
+			else {
+				currentFrame++;
+				srwords = getWordArray(cframes[currentFrame]);
+				srword = 0;
+			}
+		}
+		$('#_Content').html(srwords[srword]);
+		updateAutosizeIfChecked();
+		srword++;
+	}
+
+	function setSpeed(wpm) {
+		if (srinterval)
+			clearInterval(srinterval);
+		if (wpm > 0) {
+			var delay = parseInt( 60000.0/parseFloat(wpm) );
+			if (srwords==null)
+				srword = 0;
+			srinterval = setInterval(nextWord, delay);
+			nextWord();
+		}		
+	}
+
+	if (speedread) {
+		status.html('');
+		var speedControl = $('<select>').appendTo(status);
+		speedControl.append('<option value="0">Pause</option>');
+		speedControl.append('<option value="10">10 WPM</option>');
+		speedControl.append('<option value="100">100 WPM</option>');
+		speedControl.append('<option value="250">250 WPM</option>');
+		speedControl.append('<option value="600">600 WPM</option>');
+
+		speedControl.change(function() {
+			var wpm = parseInt(speedControl.val());
+			setSpeed(wpm);
+		});
+		$('#_Content').addClass('SpeedRead');
+	}
+	else {
+		$('#_Content').removeClass('SpeedRead');
+		setSpeed(0);
+        showFrame(currentFrame||0);
+	}
+}
+
+function updateAutosizeIfChecked() {
+	if ($('#_Font input').is(':checked')) {
+		autosize();
+		settings('autosize', 'true');
+	}
+	else {
+		settings('autosize', 'false');
+	}
+}
+
 function autosize() {
 	var pw = $('#_Panel').width();
 	var ph = $('#_Panel').height();
@@ -347,7 +439,7 @@ function autosize() {
 				return;
 			}
 
-			if (ch > pY) /*|| (cw > pw))*/ {
+			if ((ch > pY) /*|| (cw > pw)*/) {
 				fontSize -= fontChange;
 				updateFonts();
 
@@ -389,6 +481,9 @@ function showFrame(f) {
 	$('#_Content').hide();
 
     var content = document.getElementById("_Content");    
+
+	if (cframes.length-1 < f)
+		f = cframes.length-1;
 
     var line = cframes[f];
 	line = line.replace(/{{/g, "<");
@@ -994,6 +1089,10 @@ function initCortexit() {
 	$('#toggleThemeMenu').click(function() {
 		$('#themeMenu').toggle();
 	});
+	$('#SpeedReadCheck').click(function() {
+		var speedread =	$('#SpeedReadCheck').is(':checked');
+		setSpeedRead(speedread);
+	});
 
 	$('.setTheme').click(function() {
 		setTheme($(this).attr('theme'));
@@ -1003,15 +1102,7 @@ function initCortexit() {
 		autosize();
 	});
 
-	function updateAutosizeIfChecked() {
-		if ($('#_Font input').is(':checked')) {
-			autosize();
-			settings('autosize', 'true');
-		}
-		else {
-			settings('autosize', 'false');
-		}
-	}
+
 
 	$('#_Font input').change(function() {
 		updateAutosizeIfChecked();

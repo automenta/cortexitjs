@@ -18,6 +18,9 @@ root {
 #_Content {
 	padding: 0.25em;
 }
+.SpeedRead {
+	text-align: center;
+}
 
 #Loading {
    background: url('icons/loading.gif') no-repeat;
