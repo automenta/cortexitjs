@@ -19,12 +19,9 @@ function newCortexitHTML(c, onClose) {
 	d += "        <div id=\"_Prev\">";
 	d += "			&nbsp;";
 	d += "        <\/div>";
-	d += "        <div>";
-		d += "        <div><input id='SpeedReadCheck' type='checkbox' title='Speed-Read'/>&nbsp;</div>";
-		d += "        <div id=\"Status\">";
-		d += "			&nbsp;";
-		d += "        <\/div>";
-	d += "        </div>";
+	d += "        <div id=\"Status\">";
+	d += "			&nbsp;";
+	d += "        <\/div>";
 	d += "        <div id=\"_Next\">";
 	d += "			&nbsp;";
 	d += "        <\/div>";
@@ -326,10 +323,13 @@ function goPreviousExplicit() {
 var srinterval = null;
 var srwords = null;
 var srword = 0;
+var speedreading = false;
+
 
 var striphtmlregex = /(<([^>]+)>)/ig;
 
 function getWordArray(text) {
+	//TODO fix this
 	text = text.replace(/{{/g, "<");
 	text = text.replace(/}}/g, ">");
 	text = text.replace(striphtmlregex, '');
@@ -346,6 +346,8 @@ function getWordArray(text) {
 
 function setSpeedRead(speedread) {
 	var status = $('#Status');
+
+	speedreading = speedread;
 
 	function nextWord() {
 		if (!srwords) {
@@ -384,20 +386,35 @@ function setSpeedRead(speedread) {
 		status.html('');
 		var speedControl = $('<select>').appendTo(status);
 		speedControl.append('<option value="0">Pause</option>');
-		speedControl.append('<option value="10">10 WPM</option>');
+		speedControl.append('<option value="50">50 WPM</option>');
 		speedControl.append('<option value="100">100 WPM</option>');
-		speedControl.append('<option value="250">250 WPM</option>');
+		speedControl.append('<option value="200">200 WPM</option>');
+		speedControl.append('<option value="300">300 WPM</option>');
+		speedControl.append('<option value="400">400 WPM</option>');
+		speedControl.append('<option value="500">500 WPM</option>');
 		speedControl.append('<option value="600">600 WPM</option>');
 
 		speedControl.change(function() {
 			var wpm = parseInt(speedControl.val());
 			setSpeed(wpm);
 		});
+
+		var returnButton = $('<button title="End Speed-Reading Mode">x</button>').appendTo(status);
+		returnButton.click(function() {
+			setSpeedRead(false);
+			return false;
+		});
+		
+
 		$('#_Content').addClass('SpeedRead');
+		setSpeed(0);
+		nextWord();
 	}
 	else {
 		$('#_Content').removeClass('SpeedRead');
 		setSpeed(0);
+		srwords = null;
+		srword = 0;
         showFrame(currentFrame||0);
 	}
 }
@@ -1089,9 +1106,11 @@ function initCortexit() {
 	$('#toggleThemeMenu').click(function() {
 		$('#themeMenu').toggle();
 	});
-	$('#SpeedReadCheck').click(function() {
-		var speedread =	$('#SpeedReadCheck').is(':checked');
-		setSpeedRead(speedread);
+
+	$('#Status').click(function() {
+		if (!speedreading) {
+			setSpeedRead(true);
+		}
 	});
 
 	$('.setTheme').click(function() {
