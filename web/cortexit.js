@@ -78,6 +78,7 @@ function newCortexitHTML(c, onClose) {
 	d += "		    <div>";
 	d += "				<a id='toggleThemeMenu' href=\"#\" class=\"tooltip\"><img width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/colors.png\" title=\"Theme\"\/><span>Theme<\/span><\/a>";
 	d += "				<br\/><span id=\"themeMenu\" style='display:none'>";
+	d += "	            <button class='ToggleStrobeButton'>Strobe...<\/button>";
 	d += "	            <button class=\"setTheme\" theme='default-black'>White on Black<\/button>";
 	d += "	            <button class=\"setTheme\" theme='default-white'>Black on White<\/button>";
 	d += "	            <button class=\"setTheme\" theme='terminal-green'>Terminal Green<\/button>";
@@ -107,6 +108,19 @@ function newCortexitHTML(c, onClose) {
 	d += "    <\/div>";
 	d += "    ";
 	d += "    <span id=\"_Speech\"><\/span>";
+
+    d += '<div id="StrobePanel">';
+	d += ' <input type="checkbox" id="StrobeEnabled"/>Enabled<br/>';
+    d += 'On color: <input id="colorA" class="color" value="666666"><br/>';
+    d += '    Off color: <input id="colorB" class="color" value="000000"><br/><br/>';
+        
+    d += '    Frequency: <input id="StrobeFrequency" type="range" val="10" step="0.1" min="1" max="20"/><br/><span id="StrobeFrequencyDisplay">10 Hz</span>';
+    d += '    <br/>';
+    d += '    <br/>';
+        
+    d += '    <button class="ToggleStrobeButton">Close</button>';
+    d += '</div>';
+
 	d += "    <div id=\"audio\" style=\"display:none\"><\/div>";
 	d += "    <div id=\"SelectedText\" style=\"display:none\"><\/div>";
 	d += "    <div id=\"ChromeOptions\" style=\"display:none\"><\/div>";
@@ -1141,6 +1155,38 @@ function initCortexit() {
 	
 	$(window).resize(function() {
 		updateAutosizeIfChecked();
+	});
+
+	$('.ToggleStrobeButton').click(function() {
+		$('#StrobePanel').toggle();
+	});
+
+	var strobing = false;
+	var strobeState = false;
+	var strobeRate = 1;
+    function nextStrobe() {
+		if (strobing) {
+		  var cA = '#' + $('#colorA').val();
+		  var cB = '#' + $('#colorB').val();
+		  $('#_Panel').css('background-color', (strobeState) ? cB : cA);
+		  strobeState = !strobeState;
+		  setTimeout(nextStrobe, parseInt(500.0 / strobeRate)); //in milliseconds
+		}
+	}
+
+	$('#StrobeFrequency').change(function() {
+	  strobeRate = parseFloat( $('#StrobeFrequency').val() );
+	  $("#StrobeFrequencyDisplay").html(strobeRate + ' Hz');
+	});
+	$('#StrobeEnabled').click(function() {
+		var enabled = $('#StrobeEnabled').is(':checked');
+		if (enabled) {
+	      strobing = true;
+		  nextStrobe();
+		}
+		else {
+		  strobing = false;
+		}
 	});
 
 	function hoverOpacity(x) {

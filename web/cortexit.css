@@ -157,3 +157,20 @@ a.tooltipAbove:hover span{display:inline; position:absolute;  color:white;} */
 	right: 0.25em;
 	cursor: crosshair;
 }
+
+#StrobePanel {
+	display:none;
+    position: absolute;
+    width: 50%;
+    height: 30%;
+    top: 35%;
+    left: 25%;
+    background-color: white;
+    color: black;
+    font-size: 18px;
+    padding: 15px;
+    border: 2px solid black;
+    font-family: Arial, Sans;
+    text-align: center;
+}
+
