@@ -12,6 +12,9 @@ function getSelectionHtml() {
         }
         html = container.innerHTML;
     }
+	if (html.length == 0) {
+		html = window.document.documentElement.innerHTML;
+	}
     return html;
 }
 
