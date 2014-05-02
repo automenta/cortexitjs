@@ -305,7 +305,14 @@ function toggleVozmeSpeech() {
 }
 */
 
+var lastUtterance = null;
+
 function speakSpeech(f) {
+	if (lastUtterance)
+		lastUtterance.onend = function() { }
+
+	speechSynthesis.cancel();
+
 	var content = $('#_Content').text(); 
 
     var u = new SpeechSynthesisUtterance();
@@ -332,8 +339,9 @@ function speakSpeech(f) {
 		stopSpeakAutoSpeech();
 		alert('Unable to speak.');
 	}
-    speechSynthesis.speak(u);
 
+	lastUtterance = u;
+    speechSynthesis.speak(u);
 }
 
 function startSpeakAutoSpeech() {
@@ -346,6 +354,9 @@ function startSpeakAutoSpeech() {
         speakSpeech( function() { stopSpeakAutoSpeech();  } );
 }
 function stopSpeakAutoSpeech() {
+	speechSynthesis.cancel();
+	lastUtterance = null;
+
     stopAutospeech = true;
     $('#speaker_icon').attr('src', 'icons/speak.png');
     $('#audio').html('');
@@ -369,6 +380,9 @@ var speedreading = false;
 var striphtmlregex = /(<([^>]+)>)/ig;
 
 function getWordArray(text) {
+	if (!text)
+		return [];
+
 	//TODO fix this
 	text = text.replace(/{{/g, "<");
 	text = text.replace(/}}/g, ">");
@@ -1134,9 +1148,9 @@ function initCortexit() {
 
 	//$('#toggleVozmeSpeech').click(function() { toggleVozmeSpeech(); });
 
-	$('#addImagesForSelection').click(function() { addImagesForSelection(); });
-	$('#toggleEdit').click(function() { toggleEdit(); });
-	$('#shareIt').click(function() { shareIt(); });
+	$('#addImagesForSelection').click(function() { addImagesForSelection(); return false; });
+	$('#toggleEdit').click(function() { toggleEdit(); return false; });
+	$('#shareIt').click(function() { shareIt(); return false; });
 	$("#_Next").click(goNext);
 	$("#_Prev").click(goPrevious);
 
@@ -1145,19 +1159,23 @@ function initCortexit() {
 		
 	$('#toggleSpeakerMenu').click(function() {
 		$('#speechMenu').toggle();
+		return false;
 	});
 	$('#toggleThemeMenu').click(function() {
 		$('#themeMenu').toggle();
+		return false;
 	});
 
 	$('#Status').click(function() {
 		if (!speedreading) {
 			setSpeedRead(true);
 		}
+		return false;
 	});
 
 	$('.setTheme').click(function() {
 		setTheme($(this).attr('theme'));
+		return false;
 	});
 
 	$("#_Font span").click(function() {
@@ -1173,6 +1191,7 @@ function initCortexit() {
 	$('.goto').click(function() {
 		var h = $(this).attr('html');
 		loadHTML(h);
+		return false;
 	});
 
 	$('#gotoBookmarklet').click(bookmarklet);
@@ -1180,6 +1199,7 @@ function initCortexit() {
 	$('#ToggleMenuButton').click(function() {
 		$('#Menu').toggle(); //("puff", 250);
 		updateAutosizeIfChecked();
+		return false;
 	});
 	
 	$(window).resize(function() {
@@ -1188,6 +1208,7 @@ function initCortexit() {
 
 	$('.ToggleStrobeButton').click(function() {
 		$('#StrobePanel').toggle();
+		return false;
 	});
 
 	var strobing = false;
