@@ -567,7 +567,7 @@ function showFrame(f) {
         prev.innerHTML = '&nbsp;';
     }
     else {
-        prev.innerHTML = '<a href="#"><img src="' + window.CORTEXIT_PATH + 'icons/left.png" height="32px" width="32px"/></a>';
+        prev.innerHTML = '<img src="' + window.CORTEXIT_PATH + 'icons/left.png" height="32px" width="32px"/>';
     }
 
     var next = document.getElementById("_Next");
@@ -576,7 +576,7 @@ function showFrame(f) {
     }
     else {
         //next.innerHTML = '<button onClick="goNext();">----&gt;</button>';
-        next.innerHTML = '<a href="#"><img src="' + window.CORTEXIT_PATH + 'icons/right.png" height="32px" width="32px"/></a>';
+        next.innerHTML = '<img src="' + window.CORTEXIT_PATH + 'icons/right.png" height="32px" width="32px"/>';
     }
     updateFonts();
 
