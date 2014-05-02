@@ -63,12 +63,12 @@ function newCortexitHTML(c, onClose) {
 	d += "		    <\/li>";
 	d += "		    -->";
 	d += "			<div>";
-	d += "			    <a id='toggleSpeakerMenu' href=\"#\" class=\"tooltip\"><img id=\"speaker_icon\" width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/speak.png\" alt=\"Speak\"\/><span>Speech<\/span><\/a>";
+	d += "			    <a id='toggleSpeakerMenu' href=\"#\" style=\"display:none\" class=\"tooltip\"><img id=\"speaker_icon\" width=\"48px\" height=\"48px\" src=\"" + window.CORTEXIT_PATH + "icons\/speak.png\" alt=\"Speak\"\/><span>Speech<\/span><\/a>";
 	d += "				<br\/><span id=\"speechMenu\" style='display:none'>";
-	d += "	            <button class=\"speakJS\" id=\"speakSpeech\">Speak.js Speech (once)<\/button>";
-	d += "	            <button class=\"speakJS\" id=\"startSpeakAutoSpeech\">Start Speak.js Autoplay<\/button>";
+	d += "	            <button class=\"speakJS\" id=\"speakSpeech\">Speak This<\/button>";
+	d += "	            <button class=\"speakJS\" id=\"startSpeakAutoSpeech\">Start Speech<\/button>";
 	d += "	            <button class=\"speakJS\" id=\"stopSpeakAutoSpeech\">Stop<\/button>";
-	d += "	            <button id=\"toggleVozmeSpeech\">Toggle VozMe Speech<\/button></span>";
+//	d += "	            <button id=\"toggleVozmeSpeech\">Toggle VozMe Speech<\/button></span>";
 	d += "			<\/div>";
 	d += "		    ";
 	d += "		    <div>";
@@ -267,6 +267,7 @@ function settings(key, value) {
 	}
 }
 
+/*
 function enableVozmeSpeech(line) {
     speechEnabled = true;
 
@@ -302,12 +303,37 @@ function toggleVozmeSpeech() {
         enableVozmeSpeech($('#_Content').text());
     }
 }
+*/
 
 function speakSpeech(f) {
-    $.getScript("speak/speakClient.js", function(data, textStatus, jqxhr) {
-        var content = $('#_Content').text();            
-        speak.play(content, {amplitude: 100, wordgap: 5, pitch: 25, speed: 175}, f );
-    });
+	var content = $('#_Content').text(); 
+
+    var u = new SpeechSynthesisUtterance();
+    u.text = content;
+    u.lang = 'en-US';
+    u.rate = 1.2;
+
+	/*
+		  u.pitch = 2.0;
+		  u.volume = 0.5;
+	*/
+	/*
+		 var voices = speechSynthesis.getVoices();
+		  for(var i = 0; i < voices.length; i++ ) {
+		    console.log("Voice " + i.toString() + ' ' + voices[i].name + ' ' + voices[i].uri);
+		  }
+	*/
+
+    u.onend = function(event) { 
+		if (f)
+			f();
+	}
+	u.onerror = function(event) {
+		stopSpeakAutoSpeech();
+		alert('Unable to speak.');
+	}
+    speechSynthesis.speak(u);
+
 }
 
 function startSpeakAutoSpeech() {
@@ -506,8 +532,6 @@ function autosize() {
 var prevFade = null;
 function showFrame(f) {
 	clearInterval(autosizing);
-
-    disableVozmeSpeech();
 
 	$('#_Content').hide();
 
@@ -1107,13 +1131,18 @@ function initCortexit() {
 	$('#speakSpeech').click(function() { speakSpeech(function() {}); });
 	$('#startSpeakAutoSpeech').click(function() { startSpeakAutoSpeech(); });
 	$('#stopSpeakAutoSpeech').click(function() { stopSpeakAutoSpeech(); });
-	$('#toggleVozmeSpeech').click(function() { toggleVozmeSpeech(); });
+
+	//$('#toggleVozmeSpeech').click(function() { toggleVozmeSpeech(); });
+
 	$('#addImagesForSelection').click(function() { addImagesForSelection(); });
 	$('#toggleEdit').click(function() { toggleEdit(); });
 	$('#shareIt').click(function() { shareIt(); });
 	$("#_Next").click(goNext);
 	$("#_Prev").click(goPrevious);
 
+	if (window.speechSynthesis)
+		$('#toggleSpeakerMenu').show();
+		
 	$('#toggleSpeakerMenu').click(function() {
 		$('#speechMenu').toggle();
 	});
@@ -1174,10 +1203,13 @@ function initCortexit() {
 		}
 	}
 
-	$('#StrobeFrequency').change(function() {
+	function updateStrobeFrequency() {
 	  strobeRate = parseFloat( $('#StrobeFrequency').val() );
 	  $("#StrobeFrequencyDisplay").html(strobeRate + ' Hz');
-	});
+	}
+	updateStrobeFrequency();
+
+	$('#StrobeFrequency').change(updateStrobeFrequency);
 	$('#StrobeEnabled').click(function() {
 		var enabled = $('#StrobeEnabled').is(':checked');
 		if (enabled) {

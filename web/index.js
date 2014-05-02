@@ -5,7 +5,6 @@ $(document).ready(function(){
 	if (window.location.hash == '#chrome') {
 		chrome = true;
 		$('#Top').hide();
-		$('.speakJS').hide();
 		$('#Menu').toggle();
 	}
 
